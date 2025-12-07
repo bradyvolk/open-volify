@@ -1,7 +1,14 @@
 import { Users, Calendar, Shield } from "lucide-react";
 import { FeatureCard } from "./feature-card";
+import { type LucideIcon } from "lucide-react";
 
-const features = [
+interface FeatureCardProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+const features: FeatureCardProps[] = [
   {
     icon: Users,
     title: "Easy Volunteer Management",
@@ -43,4 +50,3 @@ export function Features() {
     </section>
   );
 }
-

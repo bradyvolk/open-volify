@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -6,7 +6,11 @@ interface FeatureCardProps {
   description: string;
 }
 
-export function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
+export function FeatureCard({
+  icon: Icon,
+  title,
+  description,
+}: FeatureCardProps) {
   return (
     <div className="flex flex-col rounded-lg border bg-card p-8 text-center shadow-sm transition-shadow hover:shadow-md">
       <Icon className="mx-auto h-10 w-10 text-primary" />
@@ -15,4 +19,3 @@ export function FeatureCard({ icon: Icon, title, description }: FeatureCardProps
     </div>
   );
 }
-
