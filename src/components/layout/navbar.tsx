@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import logoLarge from "@/assets/open-volify-logo-large.png";
+import { LoginButton } from "../auth/login-button";
 
 export function NavBar() {
   const location = useLocation();
@@ -10,33 +11,38 @@ export function NavBar() {
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-24 items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logoLarge} alt="OpenVolify" className="h-8 w-auto" />
+            <img src={logoLarge} alt="OpenVolify" className="h-10 w-auto" />
           </Link>
-          <div className="flex items-center gap-6">
-            <a
-              href="#platform"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Platform
-            </a>
+          <div className="flex items-center gap-12">
+            <div className="flex items-center gap-6">
+              <a
+                href="#platform"
+                className="text-md font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Platform
+              </a>
 
-            <Link
-              to="/about"
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-foreground",
-                isActive("/about") ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              About OpenVolify
-            </Link>
-            <a
-              href="#community"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Community
-            </a>
+              <Link
+                to="/about"
+                className={cn(
+                  "text-md font-medium transition-colors hover:text-foreground",
+                  isActive("/about")
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                About OpenVolify
+              </Link>
+              <a
+                href="#community"
+                className="text-md font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Community
+              </a>
+            </div>
+            <LoginButton />
           </div>
         </div>
       </div>
