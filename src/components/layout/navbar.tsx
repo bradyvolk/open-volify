@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logoLarge from "@/assets/open-volify-logo-large.png";
 
 export function NavBar() {
   const location = useLocation();
@@ -12,8 +12,7 @@ export function NavBar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <Heart className="h-6 w-6 text-primary" />
-            <span className="text-xl font-semibold">OpenVolify</span>
+            <img src={logoLarge} alt="OpenVolify" className="h-8 w-auto" />
           </Link>
           <div className="flex items-center gap-6">
             <a

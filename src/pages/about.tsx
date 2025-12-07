@@ -1,5 +1,6 @@
-import { Heart, Code, Users, Shield, Globe } from "lucide-react";
+import { Code, Users, Shield, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logoIcon from "@/assets/open-volify-icon-large.svg";
 
 export function About() {
   return (
@@ -9,7 +10,11 @@ export function About() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center justify-center rounded-full bg-primary/10 p-3">
-              <Heart className="h-8 w-8 text-primary" />
+              <img
+                src={logoIcon}
+                alt="OpenVolify"
+                className="h-12 w-12"
+              />
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
               About <span className="text-primary">OpenVolify</span>
