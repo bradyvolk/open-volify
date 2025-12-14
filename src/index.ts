@@ -1,23 +1,19 @@
-import { serve } from "bun";
-import index from "./index.html";
 import fastify from "fastify";
+import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
+import path from "path";
 import router from "./api/router.ts";
 
-// Bun HTML server
-serve({
-  routes: {
-    "/*": index,
-  },
-});
+const isProduction = process.env.NODE_ENV === "production";
 
-// Fastify API
+// Fastify server
 const server = fastify({
   // Logger only for production
   logger: !!(process.env.NODE_ENV !== "development"),
 });
 
-await server.register(cors, {
+// Setup CORS
+server.register(cors, {
   origin: (origin, cb) => {
     const hostname = new URL(origin ?? "").hostname;
     if (hostname === "localhost") {
@@ -30,6 +26,18 @@ await server.register(cors, {
   },
 });
 
+// Setup static file serving
+const staticDir = isProduction
+  ? path.join(process.cwd(), "dist")
+  : path.join(process.cwd(), "src");
+
+await server.register(fastifyStatic, {
+  root: staticDir,
+  prefix: "/",
+  index: "index.html",
+});
+
+// Register API routes
 server.register(router);
 
 const FASTIFY_PORT = Number(process.env.FASTIFY_PORT) || 3006;
