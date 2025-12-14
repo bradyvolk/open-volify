@@ -10,7 +10,14 @@ export default async function userController(fastify: FastifyInstance) {
   fastify.get(
     "/",
     async function (_request: FastifyRequest, reply: FastifyReply) {
-      const users = await db.select().from(usersTable);
+      const users = await db
+        .select({
+          id: usersTable.id,
+          first_name: usersTable.first_name,
+          last_name: usersTable.last_name,
+          email: usersTable.email,
+        })
+        .from(usersTable);
       reply.send(users);
     }
   );
