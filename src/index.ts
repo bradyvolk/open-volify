@@ -15,12 +15,20 @@ const server = fastify({
 // Setup CORS
 server.register(cors, {
   origin: (origin, cb) => {
+    // Allow requests without an origin
+    if (!origin) {
+      cb(null, true);
+      return;
+    }
     const hostname = new URL(origin ?? "").hostname;
+
+    // Allow requests from localhost
     if (hostname === "localhost") {
       //  Request from localhost will pass
       cb(null, true);
       return;
     }
+
     // Generate an error on other origins, disabling access
     cb(new Error("Not allowed"), false);
   },
