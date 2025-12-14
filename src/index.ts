@@ -1,41 +1,37 @@
 import { serve } from "bun";
 import index from "./index.html";
+import fastify from "fastify";
+import cors from "@fastify/cors";
+import router from "./api/router.ts";
 
-const server = serve({
+// Bun HTML server
+serve({
   routes: {
-    // Serve index.html for all unmatched routes.
     "/*": index,
-
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
-
-    "/api/hello/:name": async (req) => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
-    },
-  },
-
-  development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
-    hmr: true,
-
-    // Echo console logs from the browser to the server
-    console: true,
   },
 });
 
-console.log(`🚀 Server running at ${server.url}`);
+// Fastify API
+const server = fastify({
+  // Logger only for production
+  logger: !!(process.env.NODE_ENV !== "development"),
+});
+
+await server.register(cors, {
+  origin: (origin, cb) => {
+    const hostname = new URL(origin ?? "").hostname;
+    if (hostname === "localhost") {
+      //  Request from localhost will pass
+      cb(null, true);
+      return;
+    }
+    // Generate an error on other origins, disabling access
+    cb(new Error("Not allowed"), false);
+  },
+});
+
+server.register(router);
+
+const FASTIFY_PORT = Number(process.env.FASTIFY_PORT) || 3006;
+
+server.listen({ port: FASTIFY_PORT });
