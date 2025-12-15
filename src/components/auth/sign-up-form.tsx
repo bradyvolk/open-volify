@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { CircleCheckIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
@@ -14,7 +15,7 @@ export function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +66,7 @@ export function SignUpForm() {
       }
 
       // Redirect to verification sent page
-      navigate("/verification-sent");
+      setIsVerificationSent(true);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
@@ -73,6 +74,26 @@ export function SignUpForm() {
       setIsLoading(false);
     }
   };
+
+  if (isVerificationSent) {
+    return (
+      <div>
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader>
+            <CardTitle>Verification Sent</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center">
+              <CircleCheckIcon className="h-12 w-12 text-green-500" />
+            </div>
+            <p className="text-center mt-4 text-muted-foreground">
+              Please check your email for a verification link.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
