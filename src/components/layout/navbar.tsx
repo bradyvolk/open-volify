@@ -2,9 +2,13 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import logoLarge from "@/assets/open-volify-logo-large.png";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { UserProfileMenu } from "@/components/auth/user-profile-menu";
 
 export function NavBar() {
   const location = useLocation();
+  const { data, error, isPending } = authClient.useSession();
+  const user = data?.user;
 
   const currentRoute = location.pathname;
   const isActive = (path: string) => location.pathname === path;
@@ -45,19 +49,29 @@ export function NavBar() {
             </div>
 
             <div className="flex min-w-[100px]">
-              {currentRoute !== "/sign-in" && (
-                <Link to="/sign-in" className="w-full flex">
-                  <Button variant="outline" className="w-full">
-                    Sign In
-                  </Button>
-                </Link>
+              {user && (
+                <div className="flex items-center gap-2">
+                  <UserProfileMenu user={user} />
+                </div>
               )}
-              {currentRoute === "/sign-in" && (
-                <Link to="/sign-up" className="w-full flex">
-                  <Button variant="outline" className="w-full">
-                    Sign Up
-                  </Button>
-                </Link>
+
+              {!user && (
+                <>
+                  {currentRoute !== "/sign-in" && (
+                    <Link to="/sign-in" className="w-full flex">
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                  )}
+                  {currentRoute === "/sign-in" && (
+                    <Link to="/sign-up" className="w-full flex">
+                      <Button variant="outline" className="w-full">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           </div>
