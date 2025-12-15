@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import userController from "./controllers/userController.ts";
+import authController from "./controllers/authController.ts";
 
 export default async function router(fastify: FastifyInstance) {
-  fastify.register(userController, { prefix: "/api/v1/users" });
+  fastify.register(authController, { prefix: "/api/auth" });
 }

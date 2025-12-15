@@ -2,7 +2,7 @@ import logoLarge from "@/assets/open-volify-logo-large.png";
 
 export function Footer() {
   return (
-    <footer className="border-t py-12">
+    <footer className="border-t bg-white py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex items-center gap-2">

@@ -21,8 +21,12 @@ async function buildServer(): Promise<FastifyInstance> {
     origin: (origin, cb) => {
       if (!origin) return cb(null, true);
       const hostname = new URL(origin).hostname;
-      cb(null, hostname === "localhost");
+      cb(null, hostname === "localhost" || hostname === "localhost:3001");
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    credentials: true,
+    maxAge: 86400,
   });
 
   const staticDir = isProduction

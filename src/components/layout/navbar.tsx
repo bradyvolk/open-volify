@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import logoLarge from "@/assets/open-volify-logo-large.png";
-import { LoginButton } from "../auth/login-button";
+import { Button } from "@/components/ui/button";
 
 export function NavBar() {
   const location = useLocation();
 
+  const currentRoute = location.pathname;
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -42,7 +43,23 @@ export function NavBar() {
                 Community
               </a>
             </div>
-            <LoginButton />
+
+            <div className="flex min-w-[100px]">
+              {currentRoute !== "/sign-in" && (
+                <Link to="/sign-in" className="w-full flex">
+                  <Button variant="outline" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+              {currentRoute === "/sign-in" && (
+                <Link to="/sign-up" className="w-full flex">
+                  <Button variant="outline" className="w-full">
+                    Sign Up
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
