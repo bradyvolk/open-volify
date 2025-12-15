@@ -1,17 +1,17 @@
 ![Open Volify Logo](./src/assets/open-volify-logo-large.png)
 
-An open-source platform for volunteer management.
+An open-source platform for volunteer management
 
-### Getting Started
+## Getting Started
 
-#### Prerequisites
+### Prerequisites
 
 Install the following system depedencies if not already installed:
 
 - Bun - https://bun.com/docs/installation
 - Docker - https://docs.docker.com/engine/install/
 
-#### Installation
+### Installation
 
 1. Clone the repository and navigate to the cloned directory
 
