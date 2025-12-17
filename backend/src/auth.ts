@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import db from "@/db/db";
-import { user, account, session, verification } from "@/db/schema/auth-schema";
+import db from "backend/src/db/db";
+import { user, account, session, verification } from "backend/src/db/schema/auth-schema";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);

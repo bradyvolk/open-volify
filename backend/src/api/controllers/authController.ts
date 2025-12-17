@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { auth } from "@/auth";
+import { auth } from "backend/src/auth";
 
 export default async function authController(fastify: FastifyInstance) {
   fastify.route({

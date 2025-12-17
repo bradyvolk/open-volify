@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:frontend": "bun --hot src/index.ts",
-    "dev:server": "bun --hot src/server.ts",
-    "start": "NODE_ENV=production bun src/index.ts",
-    "build": "bun run build.ts"
+    "dev:frontend": "bun --hot frontend/src/index.ts",
+    "dev:server": "bun --hot backend/src/server.ts",
+    "start": "NODE_ENV=production bun frontend/src/index.ts",
+    "build": "bun run frontend/build.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",

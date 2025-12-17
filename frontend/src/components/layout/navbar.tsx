@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn } from "frontend/src/lib/utils";
 import logoLarge from "@/assets/open-volify-logo-large.png";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "frontend/src/lib/auth-client";
 import { UserProfileMenu } from "@/components/auth/user-profile-menu";
 
 export function NavBar() {
