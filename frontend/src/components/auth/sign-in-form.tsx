@@ -24,8 +24,8 @@ export function SignInForm() {
         password,
         callbackURL:
           process.env.NODE_ENV === "production"
-            ? window.location.origin + "/projects"
-            : "http://localhost:3001/projects",
+            ? window.location.origin + "/platform/projects"
+            : "http://localhost:3001/platform/projects",
       });
 
       if (signInError) {

@@ -22,7 +22,7 @@ export function UserProfileMenu({ user }: { user: User }) {
   };
 
   const handleClickProjects = () => {
-    navigate("/projects");
+    navigate("/platform/projects");
   };
 
   return (
