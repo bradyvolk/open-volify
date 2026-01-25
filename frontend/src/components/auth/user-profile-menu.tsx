@@ -21,6 +21,10 @@ export function UserProfileMenu({ user }: { user: User }) {
     navigate("/");
   };
 
+  const handleClickProjects = () => {
+    navigate("/projects");
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +34,7 @@ export function UserProfileMenu({ user }: { user: User }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleClickProjects}>
           <PanelsTopLeft className="size-4" />
           Projects
         </DropdownMenuItem>

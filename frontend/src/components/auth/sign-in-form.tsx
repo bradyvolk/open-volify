@@ -22,6 +22,10 @@ export function SignInForm() {
       const { data, error: signInError } = await authClient.signIn.email({
         email,
         password,
+        callbackURL:
+          process.env.NODE_ENV === "production"
+            ? window.location.origin + "/projects"
+            : "http://localhost:3001/projects",
       });
 
       if (signInError) {
@@ -36,9 +40,6 @@ export function SignInForm() {
         setIsLoading(false);
         return;
       }
-
-      // Successfully signed in
-      navigate("/");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
