@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { organization } from "better-auth/plugins";
 import db from "./db/db";
 import { user, account, session, verification } from "./db/schema/auth-schema";
 import { Resend } from "resend";
@@ -47,4 +48,5 @@ export const auth = betterAuth({
       });
     },
   },
+  plugins: [organization()],
 });
