@@ -18,7 +18,7 @@ Install the following system depedencies if not already installed:
 2. Create an .env file from the .env.example file
 
 ```bash
-cp .env.example .env
+cp ./backend/.env.example ./backend/.env
 ```
 
 3. General a BETTER_AUTH_SECRET with openssl to add to your .env file
