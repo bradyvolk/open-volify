@@ -1,0 +1,25 @@
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "production"
+
+# Project Configuration
+project_name = "open-volify"
+
+# Database Configuration
+db_name                     = "openvolify"
+db_username                 = "dbadmin"
+db_instance_class           = "db.t4g.micro"
+db_allocated_storage        = 20
+db_backup_retention_period  = 7
+
+# Lambda Configuration
+lambda_memory_size = 512
+lambda_timeout     = 30
+
+# Secrets (set these via environment variables or AWS Secrets Manager)
+# better_auth_secret = "your-better-auth-secret-here"
+# resend_api_key     = "your-resend-api-key-here"
+
+# Custom Domain (optional)
+# domain_name         = "app.yourdomain.com"
+# acm_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxx"
