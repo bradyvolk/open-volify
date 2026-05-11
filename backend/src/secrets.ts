@@ -12,7 +12,8 @@ import {
 
 function applyDatabaseSecret(raw: string): void {
   const { host, port, username, password, dbname } = JSON.parse(raw);
-  process.env.DATABASE_URL = `postgresql://${username}:${password}@${host}:${port}/${dbname}`;
+  // TODO: Add SSL and certificate verification
+  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}/${dbname}?sslmode=no-verify`;
 }
 
 function applyBetterAuthSecret(val: string): void {
