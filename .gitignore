@@ -3,6 +3,7 @@ node_modules
 
 # local
 ignore/
+docs/superpowers/
 
 # output
 out
