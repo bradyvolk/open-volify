@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "concurrently -n frontend,server -c cyan,magenta \"bun dev:frontend\" \"bun dev:server\"",
     "dev:frontend": "bun --hot frontend/src/index.ts",
     "dev:server": "bun --hot backend/src/bootstrap.ts",
     "start": "NODE_ENV=production bun frontend/src/index.ts",
@@ -39,6 +40,7 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
     "drizzle-kit": "^0.31.8",
     "tailwindcss": "^4.1.11",
     "tsx": "^4.21.0",
