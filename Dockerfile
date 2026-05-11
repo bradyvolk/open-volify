@@ -30,4 +30,4 @@ COPY bun-env.d.ts ./
 COPY dist ./dist
 
 # Run the application
-CMD ["bun", "run", "backend/src/server.ts"]
+CMD ["bun", "run", "backend/src/bootstrap.ts"]

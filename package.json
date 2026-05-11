@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev:frontend": "bun --hot frontend/src/index.ts",
-    "dev:server": "bun --hot backend/src/server.ts",
+    "dev:server": "bun --hot backend/src/bootstrap.ts",
     "start": "NODE_ENV=production bun frontend/src/index.ts",
     "build": "bun run frontend/build.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.1045.0",
     "@fastify/cors": "^11.2.0",
     "@fastify/static": "^8.3.0",
     "@radix-ui/react-dropdown-menu": "^2.1.16",

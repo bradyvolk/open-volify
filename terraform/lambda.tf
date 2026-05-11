@@ -65,7 +65,7 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       NODE_ENV               = "production"
-      DATABASE_URL           = "postgresql://${var.db_username}:${random_password.db_password.result}@${aws_db_instance.main.address}:${aws_db_instance.main.port}/${var.db_name}"
+      DATABASE_SECRET_ARN    = aws_secretsmanager_secret.db_password.arn
       BETTER_AUTH_SECRET_ARN = aws_secretsmanager_secret.better_auth_secret.arn
       RESEND_API_KEY_ARN     = aws_secretsmanager_secret.resend_api_key.arn
       BETTER_AUTH_URL        = "${aws_apigatewayv2_api.main.api_endpoint}"

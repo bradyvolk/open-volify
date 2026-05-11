@@ -4,10 +4,6 @@ import { organization } from "better-auth/plugins";
 import db from "./db/db";
 import { user, account, session, verification } from "./db/schema/auth-schema";
 import { Resend } from "resend";
-import { config } from "dotenv";
-import path from "path";
-
-config({ path: path.join(process.cwd(), "backend", ".env") });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
