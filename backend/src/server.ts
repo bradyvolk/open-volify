@@ -6,7 +6,6 @@ import router from "./api/router";
 import type { FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
-const isLambda = !!process.env.LAMBDA_TASK_ROOT;
 
 /**
  * Build the server
@@ -57,12 +56,9 @@ export async function buildServer(): Promise<FastifyInstance> {
   return server;
 }
 
-// Only start the server if not running in Lambda
-if (!isLambda) {
-  const server = await buildServer();
+const server = await buildServer();
 
-  await server.listen({
-    port: Number(process.env.PORT) || 3006,
-    host: "0.0.0.0",
-  });
-}
+await server.listen({
+  port: Number(process.env.PORT) || 3006,
+  host: "0.0.0.0",
+});

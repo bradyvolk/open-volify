@@ -7,8 +7,11 @@ export default async function authController(fastify: FastifyInstance) {
     url: "/*",
     async handler(request, reply) {
       try {
-        // Construct request URL
-        const url = new URL(request.url, `http://${request.headers.host}`);
+        // Construct request URL - respect X-Forwarded-Proto for environments behind a proxy/CDN
+        const proto =
+          request.headers["x-forwarded-proto"] ||
+          (process.env.NODE_ENV === "production" ? "https" : "http");
+        const url = new URL(request.url, `${proto}://${request.headers.host}`);
 
         // Convert Fastify headers to standard Headers object
         const headers = new Headers();

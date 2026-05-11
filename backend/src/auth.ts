@@ -23,7 +23,7 @@ export const auth = betterAuth({
       verification,
     },
   }),
-  trustedOrigins: ["http://localhost:3001"],
+  trustedOrigins: ["http://localhost:3001", "https://open-volify.org"],
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
