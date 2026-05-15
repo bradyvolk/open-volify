@@ -47,9 +47,9 @@ if [ "$1" = "backend" ] || [ "$1" = "all" ]; then
     echo "Logging into ECR..."
     aws ecr get-login-password --region $AWS_REGION --profile $AWS_PROFILE | docker login --username AWS --password-stdin $ECR_REPOSITORY_URL
     
-    # Build Docker image (amd64 for Lambda with Bun adapter)
-    echo "Building Docker image for amd64..."
-    docker build --platform linux/amd64 -t $ECR_REPOSITORY_URL:latest .
+    # Build Docker image
+    echo "Building Docker image for arm64..."
+    docker build --platform linux/arm64 --no-cache -t $ECR_REPOSITORY_URL:latest .
     
     # Push to ECR
     echo "Pushing image to ECR..."
