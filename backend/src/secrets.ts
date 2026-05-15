@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -10,10 +11,15 @@ import {
 // regardless of where the value came from (Secrets Manager or .env).
 // ---------------------------------------------------------------------------
 
+const certPath = resolve(import.meta.dir, "../certs/global-bundle.pem");
+
 function applyDatabaseSecret(raw: string): void {
   const { host, port, username, password, dbname } = JSON.parse(raw);
-  // TODO: Add SSL and certificate verification
-  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}/${dbname}?sslmode=no-verify`;
+  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(
+    username
+  )}:${encodeURIComponent(
+    password
+  )}@${host}:${port}/${dbname}?sslmode=verify-full&sslrootcert=${certPath}`;
 }
 
 function applyBetterAuthSecret(val: string): void {
