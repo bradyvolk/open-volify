@@ -80,14 +80,15 @@ if [ "$1" = "frontend" ] || [ "$1" = "all" ]; then
     
     # Sync to S3
     echo "Syncing to S3..."
-    aws s3 sync dist s3://$S3_BUCKET_NAME --delete
+    aws s3 sync dist s3://$S3_BUCKET_NAME --delete --profile $AWS_PROFILE
     
     # Invalidate CloudFront cache
     echo "Invalidating CloudFront cache..."
     aws cloudfront create-invalidation \
         --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
         --paths "/*" \
-        --no-cli-pager
+        --no-cli-pager \
+        --profile $AWS_PROFILE
     
     echo -e "${GREEN}✓ Frontend deployed successfully${NC}"
     echo ""
