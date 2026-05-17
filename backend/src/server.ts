@@ -30,7 +30,7 @@ export async function buildServer(): Promise<FastifyInstance> {
         hostname.includes("open-volify.org");
       cb(null, allowed);
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     credentials: true,
     maxAge: 86400,
