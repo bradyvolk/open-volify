@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Open Volify is an open-source volunteer management platform. The stack is:
+
 - **Frontend**: React 19, React Router v7, TanStack Query, Tailwind CSS v4, Radix UI (shadcn-style components), served via Bun's native bundler
 - **Backend**: Fastify v5, Drizzle ORM, PostgreSQL, Better Auth, Resend for email
 - **Runtime**: Bun throughout — never use Node, npm, pnpm, or vite
@@ -35,6 +36,7 @@ Single `package.json` at root covers both `frontend/` and `backend/`. The `@/*` 
 ### Backend Entry Point
 
 **Always start the server via `backend/src/bootstrap.ts`**, not `server.ts` directly. `bootstrap.ts` ensures this load order:
+
 1. Load `backend/.env` via dotenv (no-op in Lambda where the file doesn't exist)
 2. Fetch secrets from AWS Secrets Manager (populates `process.env` — a no-op locally when no `*_ARN` env vars are set)
 3. Dynamically import `server.ts` so Drizzle/auth initialize only after env is fully populated
@@ -46,6 +48,10 @@ Better Auth handles authentication at `/api/auth/*`. The backend `auth.ts` uses 
 ### Database Schema
 
 All schema files live in `backend/src/db/schema/`. The auth schema (`auth-schema.ts`) covers `user`, `session`, `account`, `verification`, `organization`, `member`, and `invitation` tables — these are managed by Better Auth and must match what Better Auth expects.
+
+### Migrations
+
+Migrations are managed by Drizzle Kit. Run `bun drizzle-kit migrate` to run migrations. Migrations are stored in `backend/drizzle/`. Generate migrations with `bun drizzle-kit generate`.
 
 ### Dev vs Production
 
@@ -67,3 +73,14 @@ docker run --name open-volify-postgres -e POSTGRES_PASSWORD=password -d -p 5432:
 ```
 
 Required `.env` values: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `RESEND_API_KEY`.
+
+## Contributing
+
+Commit with commit messages like this:
+
+```
+git commit -m "Added <some feature>"
+git commit -m "Fixed <some bug>"
+```
+
+Keep commit messages short.
