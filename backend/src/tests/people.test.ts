@@ -81,6 +81,8 @@ describe("peopleController", () => {
   describe("deleteContact", () => {
     it("deletes a contact", async () => {
       const created = await createContact({ firstName: "Jane", lastName: "Doe", email: TEST_EMAIL, role: "volunteer" })
+      const resultBeforeDelete = await getContactById(created.id)
+      expect(resultBeforeDelete).toBeDefined()
       await deleteContact(created.id)
       const result = await getContactById(created.id)
       expect(result).toBeUndefined()
