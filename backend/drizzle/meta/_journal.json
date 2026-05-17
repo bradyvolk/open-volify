@@ -8,6 +8,13 @@
       "when": 1778472825357,
       "tag": "0000_spooky_pyro",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778981729776,
+      "tag": "0001_lovely_talon",
+      "breakpoints": true
     }
   ]
 }
