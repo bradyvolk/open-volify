@@ -1,11 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "frontend/src/lib/utils";
-import { FolderKanban, Building2 } from "lucide-react";
+import { FolderKanban, Building2, Users } from "lucide-react";
 
 export function LeftNav() {
   const location = useLocation();
 
   const navItems = [
+    {
+      label: "People",
+      path: "/platform/people",
+      icon: Users,
+    },
     {
       label: "Projects",
       path: "/platform/projects",

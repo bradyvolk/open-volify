@@ -8,6 +8,9 @@ import { SignIn } from "frontend/src/pages/sign-in";
 import { SignUp } from "frontend/src/pages/sign-up";
 import { Projects } from "frontend/src/pages/projects";
 import { Organizations } from "frontend/src/pages/organizations";
+import { PeoplePage } from "frontend/src/features/people/pages/people-page";
+import { PeopleNewPage } from "frontend/src/features/people/pages/people-new-page";
+import { PeopleDetailPage } from "frontend/src/features/people/pages/people-detail-page";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import "./index.css";
 
@@ -25,6 +28,9 @@ export function App() {
 
             <Route element={<ProtectedRoute />}>
               <Route path="/platform" element={<PlatformLayout />}>
+                <Route path="people" element={<PeoplePage />} />
+                <Route path="people/new" element={<PeopleNewPage />} />
+                <Route path="people/:id" element={<PeopleDetailPage />} />
                 <Route path="projects" element={<Projects />} />
                 <Route path="organizations" element={<Organizations />} />
               </Route>
