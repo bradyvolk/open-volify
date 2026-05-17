@@ -12,6 +12,8 @@ Open Volify is an open-source volunteer management platform. The stack is:
 ## Dev Commands
 
 ```bash
+nvm use v24.13.1             # use the correct Node version
+
 bun install                  # install dependencies
 bun run dev                  # start both frontend and backend dev servers
 bun dev:frontend             # frontend dev server at http://localhost:3001
