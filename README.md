@@ -99,6 +99,42 @@ bun test
 
 Currently, tests run against a real local Postgres (no DB mocking), so make sure your database is running first.
 
+## Self-Hosting with Docker Compose
+
+Run the whole stack (app + Postgres) with one command. You only need [Docker](https://docs.docker.com/engine/install/).
+
+1. **Configure environment**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Generate a `BETTER_AUTH_SECRET` and put it in `.env`:
+
+   ```bash
+   openssl rand -base64 32
+   ```
+
+   (Set `RESEND_API_KEY` too if you want transactional email; leave it blank otherwise.)
+
+2. **Start the stack**
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+   The app container runs database migrations on startup, then serves Open Volify at **http://localhost:3006**.
+
+3. **Stop the stack**
+
+   ```bash
+   docker compose down
+   ```
+
+   Your data persists in the `pgdata` Docker volume. To wipe it, run `docker compose down -v`.
+
+> The root `.env` and `docker-compose.yml` are for self-hosting. For local **development** (hot reload, separate frontend/backend processes), use the [Getting Started](#getting-started) flow with `backend/.env` instead.
+
 ## Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for setup details and conventions before opening a pull request.
