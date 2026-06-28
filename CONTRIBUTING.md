@@ -53,11 +53,40 @@ git commit -m "Add group membership endpoint"
 git commit -m "Fix event capacity validation"
 ```
 
-## Pull requests
+## Contribution workflows
 
-1. Fork the repo and create a feature branch.
-2. Make your change, with tests where applicable.
-3. Ensure `bun test` passes and the app runs.
-4. Open a PR with a clear description of what changed and why.
+There are two ways to get a change into Open Volify:
+
+### Fork-based (default, for external contributors)
+
+You don't need write access to the repo.
+
+1. Fork the repository on GitHub.
+2. Clone your fork and add the upstream remote:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/open-volify.git
+   cd open-volify
+   git remote add upstream https://github.com/bradyvolk/open-volify.git
+   ```
+3. Create a feature branch, make your change, and push to your fork.
+4. Open a pull request from your fork's branch to `bradyvolk/open-volify:main`.
+5. Leave **"Allow edits from maintainers"** checked so maintainers can push small fixups.
+
+Keep your fork up to date with `git fetch upstream && git rebase upstream/main`.
+
+> Note: PRs from forks run CI with restricted permissions and no repository secrets — this is expected and fine for typecheck/test.
+
+### Branch-based (for maintainers / collaborators with write access)
+
+If you've been granted write access, you can skip forking:
+
+1. Create a branch directly in the main repo.
+2. Push it and open a PR to `main`.
+
+## Pull request checklist
+
+1. Make your change, with tests where applicable.
+2. Ensure `bun test` and `bun run typecheck` pass, and the app runs.
+3. Open a PR with a clear description of what changed and why; fill in the PR template.
 
 By contributing, you agree that your contributions will be licensed under the project's [AGPL-3.0](./LICENSE) license.
