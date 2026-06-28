@@ -1,7 +1,8 @@
 {
-  "name": "bun-react-template",
+  "name": "open-volify",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "dev": "concurrently -n frontend,server -c cyan,magenta \"bun dev:frontend\" \"bun dev:server\"",
