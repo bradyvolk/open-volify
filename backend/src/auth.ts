@@ -6,7 +6,7 @@ import { user, account, session, verification } from "./db/schema/auth-schema"
 import { Resend } from "resend"
 import { ac, volunteer, staff, admin } from "./lib/permissions"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 interface SendVerificationEmailProps {
   user: { email: string }

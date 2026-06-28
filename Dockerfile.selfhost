@@ -1,0 +1,24 @@
+# General-purpose self-host image (NOT the AWS Lambda image — see ./Dockerfile for that).
+# Builds the frontend inside the image and runs the Fastify server directly.
+FROM oven/bun:1-debian AS base
+
+WORKDIR /app
+
+# Install all dependencies (build needs devDependencies like the Tailwind plugin)
+COPY package.json bun.lock bunfig.toml ./
+RUN bun install --frozen-lockfile
+
+# Copy the rest of the source (.dockerignore excludes node_modules, .env, local dist)
+COPY . .
+
+# Build the frontend into dist/
+RUN bun run build
+
+ENV NODE_ENV=production
+ENV PORT=3006
+EXPOSE 3006
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]

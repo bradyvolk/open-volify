@@ -1,0 +1,20 @@
+# Ignore file for the self-host build (Dockerfile.selfhost). The self-host image
+# builds the frontend itself via `bun run build`, so a stale local dist must not
+# be copied in. This does NOT affect the Lambda build (root Dockerfile), which
+# uses the shared .dockerignore and needs dist.
+.git
+.gitignore
+node_modules
+dist
+out
+*.tgz
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+*.log
+.DS_Store
+terraform
+.github
