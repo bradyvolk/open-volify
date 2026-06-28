@@ -13,7 +13,8 @@
 
 ---
 
-> [!WARNING] Open Volify is pre-1.0 and under active construction. APIs, schema, and features will change. It is not yet recommended for production use. Contributions, issues, and feedback are very welcome!
+> [!WARNING]
+> Open Volify is pre-1.0 and under active construction. APIs, schema, and features will change. It is not yet recommended for production use. Contributions, issues, and feedback are very welcome!
 
 ## What is Open Volify?
 
