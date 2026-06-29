@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { authClient } from "frontend/src/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { MainTopNav } from "./main-top-nav";
 import { PlatformTopNav } from "./platform-top-nav";

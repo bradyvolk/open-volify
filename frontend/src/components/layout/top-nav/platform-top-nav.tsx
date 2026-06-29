@@ -1,4 +1,4 @@
-import { authClient } from "frontend/src/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { UserProfileMenu } from "@/components/auth/user-profile-menu";
 import { Link } from "react-router-dom";
 import type { User } from "better-auth";
