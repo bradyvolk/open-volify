@@ -3,6 +3,7 @@ import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
 import path from "path";
 import router from "./api/router";
+import { getAdditionalAllowedHostnames } from "./lib/allowed-origins";
 import type { FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -16,7 +17,9 @@ export async function buildServer(): Promise<FastifyInstance> {
     logger: process.env.NODE_ENV !== "development",
   });
 
-  // Setup CORS
+  // Setup CORS. Self-hosters on a custom domain can add origins via the
+  // ADDITIONAL_ALLOWED_ORIGINS env var (see lib/allowed-origins.ts).
+  const additionalHostnames = getAdditionalAllowedHostnames();
   await server.register(cors, {
     origin: (origin, cb) => {
       if (!origin) return cb(null, true);
@@ -27,7 +30,8 @@ export async function buildServer(): Promise<FastifyInstance> {
         hostname.includes("cloudfront.net") ||
         hostname.includes("execute-api") ||
         hostname.includes("amazonaws.com") ||
-        hostname.includes("open-volify.org");
+        hostname.includes("open-volify.org") ||
+        additionalHostnames.includes(hostname);
       cb(null, allowed);
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
