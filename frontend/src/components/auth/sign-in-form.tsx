@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { authClient } from "frontend/src/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 export function SignInForm() {
   const [email, setEmail] = useState("");

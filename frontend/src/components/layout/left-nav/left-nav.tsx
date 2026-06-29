@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "frontend/src/lib/utils";
+import { cn } from "@/lib/utils";
 import { FolderKanban, Building2, Users } from "lucide-react";
 
 export function LeftNav() {

@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { authClient } from "frontend/src/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 export function ProtectedRoute() {
   const { data, isPending } = authClient.useSession();

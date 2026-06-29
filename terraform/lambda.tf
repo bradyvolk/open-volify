@@ -69,6 +69,10 @@ resource "aws_lambda_function" "api" {
       BETTER_AUTH_SECRET_ARN = aws_secretsmanager_secret.better_auth_secret.arn
       RESEND_API_KEY_ARN     = aws_secretsmanager_secret.resend_api_key.arn
       BETTER_AUTH_URL        = "${aws_apigatewayv2_api.main.api_endpoint}"
+      # Canonical public origin used for CORS + Better Auth trusted origins.
+      # Same-origin in production (served via CloudFront): custom domain if set,
+      # otherwise the CloudFront default domain.
+      APP_URL = var.domain_name != "" ? "https://${var.domain_name}" : "https://${aws_cloudfront_distribution.frontend.domain_name}"
     }
   }
 

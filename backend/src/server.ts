@@ -3,6 +3,7 @@ import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
 import path from "path";
 import router from "./api/router";
+import { getAllowedOrigins } from "./lib/allowed-origins";
 import type { FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -17,18 +18,11 @@ export async function buildServer(): Promise<FastifyInstance> {
   });
 
   // Setup CORS
+  const allowedOrigins = new Set(getAllowedOrigins());
   await server.register(cors, {
     origin: (origin, cb) => {
       if (!origin) return cb(null, true);
-      const hostname = new URL(origin).hostname;
-      // Allow localhost for development and CloudFront/API Gateway for production
-      const allowed =
-        hostname === "localhost" ||
-        hostname.includes("cloudfront.net") ||
-        hostname.includes("execute-api") ||
-        hostname.includes("amazonaws.com") ||
-        hostname.includes("open-volify.org");
-      cb(null, allowed);
+      cb(null, allowedOrigins.has(origin));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],

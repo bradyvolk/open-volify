@@ -36,6 +36,7 @@ export async function createContact(data: CreateContactInput): Promise<Contact> 
     .insert(contact)
     .values({ id: crypto.randomUUID(), ...data })
     .returning()
+  if (!result) throw new Error("Failed to create contact")
   return result
 }
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CircleCheckIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Label } from "@/components/ui/label";
-import { authClient } from "frontend/src/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 export function SignUpForm() {
   const [firstName, setFirstName] = useState("");

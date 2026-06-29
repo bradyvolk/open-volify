@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "frontend/src/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 
 export function UserProfileMenu({ user }: { user: User }) {

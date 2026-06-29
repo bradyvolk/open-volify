@@ -14,6 +14,7 @@ ECR_REPOSITORY_URL="${ECR_REPOSITORY_URL}"
 LAMBDA_FUNCTION_NAME="${LAMBDA_FUNCTION_NAME:-open-volify-api}"
 S3_BUCKET_NAME="${S3_BUCKET_NAME}"
 CLOUDFRONT_DISTRIBUTION_ID="${CLOUDFRONT_DISTRIBUTION_ID}"
+DATABASE_SECRET_ARN="${DATABASE_SECRET_ARN}"
 
 # Check if terraform outputs are set
 if [ -z "$ECR_REPOSITORY_URL" ] || [ -z "$S3_BUCKET_NAME" ] || [ -z "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
@@ -35,10 +36,32 @@ echo -e "${BLUE}Open Volify Deployment Script${NC}"
 echo -e "${BLUE}=================================${NC}"
 echo ""
 
+# Run database migrations against production RDS.
+# Runs before the Lambda code update so the new schema is live when new code serves.
+# Migrations connect to prod Postgres directly (RDS is publicly accessible) — migrate.ts
+# resolves DATABASE_URL from Secrets Manager when DATABASE_SECRET_ARN is set.
+if [ "$1" = "migrate" ] || [ "$1" = "backend" ] || [ "$1" = "all" ]; then
+    echo -e "${GREEN}[migrations] Running database migrations...${NC}"
+
+    if [ -z "$DATABASE_SECRET_ARN" ]; then
+        echo -e "${RED}Error: DATABASE_SECRET_ARN not set${NC}"
+        echo "Set it from terraform output, e.g.:"
+        echo "  export DATABASE_SECRET_ARN=\$(terraform -chdir=terraform output -json secrets_manager_arns | jq -r .db_password)"
+        exit 1
+    fi
+
+    # AWS_PROFILE/AWS_REGION are read by the AWS SDK inside migrate.ts -> loadSecrets().
+    AWS_PROFILE="$AWS_PROFILE" AWS_REGION="$AWS_REGION" DATABASE_SECRET_ARN="$DATABASE_SECRET_ARN" \
+        bun run db:migrate
+
+    echo -e "${GREEN}✓ Migrations complete${NC}"
+    echo ""
+fi
+
 # Deploy backend (Lambda)
 if [ "$1" = "backend" ] || [ "$1" = "all" ]; then
     echo -e "${GREEN}[1/3] Building and deploying backend...${NC}"
-    
+
     # Build frontend first (required for Docker image)
     echo "Building frontend..."
     bun run build

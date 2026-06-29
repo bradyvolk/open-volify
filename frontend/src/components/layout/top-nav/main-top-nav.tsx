@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { cn } from "frontend/src/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import logoLarge from "@/assets/open-volify-logo-large.png";
 import { UserProfileMenu } from "@/components/auth/user-profile-menu";
