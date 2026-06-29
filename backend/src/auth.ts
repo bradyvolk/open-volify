@@ -5,7 +5,7 @@ import db from "./db/db"
 import { user, account, session, verification } from "./db/schema/auth-schema"
 import { Resend } from "resend"
 import { ac, volunteer, staff, admin } from "./lib/permissions"
-import { getTrustedOrigins } from "./lib/allowed-origins"
+import { getAllowedOrigins } from "./lib/allowed-origins"
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
@@ -20,7 +20,7 @@ export const auth = betterAuth({
     provider: "pg",
     schema: { user, account, session, verification },
   }),
-  trustedOrigins: getTrustedOrigins(),
+  trustedOrigins: getAllowedOrigins(),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,

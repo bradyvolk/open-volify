@@ -3,7 +3,7 @@ import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
 import path from "path";
 import router from "./api/router";
-import { getAdditionalAllowedHostnames } from "./lib/allowed-origins";
+import { getAllowedOrigins } from "./lib/allowed-origins";
 import type { FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -17,22 +17,15 @@ export async function buildServer(): Promise<FastifyInstance> {
     logger: process.env.NODE_ENV !== "development",
   });
 
-  // Setup CORS. Self-hosters on a custom domain can add origins via the
-  // ADDITIONAL_ALLOWED_ORIGINS env var (see lib/allowed-origins.ts).
-  const additionalHostnames = getAdditionalAllowedHostnames();
+  // Setup CORS. Production is same-origin (frontend + API behind one CloudFront
+  // origin), so this allowlist is driven by APP_URL plus any extras configured
+  // via ADDITIONAL_ALLOWED_ORIGINS (see lib/allowed-origins.ts).
+  const allowedOrigins = new Set(getAllowedOrigins());
   await server.register(cors, {
     origin: (origin, cb) => {
+      // Same-origin and non-browser requests have no Origin header.
       if (!origin) return cb(null, true);
-      const hostname = new URL(origin).hostname;
-      // Allow localhost for development and CloudFront/API Gateway for production
-      const allowed =
-        hostname === "localhost" ||
-        hostname.includes("cloudfront.net") ||
-        hostname.includes("execute-api") ||
-        hostname.includes("amazonaws.com") ||
-        hostname.includes("open-volify.org") ||
-        additionalHostnames.includes(hostname);
-      cb(null, allowed);
+      cb(null, allowedOrigins.has(origin));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
