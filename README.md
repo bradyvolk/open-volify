@@ -16,7 +16,7 @@
 ---
 
 > [!WARNING]
-> Open Volify is pre-1.0 and under active construction. APIs, schema, and features will change. It is not yet recommended for production use. Contributions, issues, and feedback are very welcome!
+> Open Volify is pre-1.0 and under active construction. APIs, schema, and features will change. It is not recommended for production use. Contributions, issues, and feedback are very welcome! This project is in its very early stages. There are known issues, and there's a need to develop strong patterns for developers to reuse.
 >
 > This repository currently also contains the public-facing landing pages for [open-volify.org](https://open-volify.org/). These are bundled in for now but will eventually be split out of the core self-hostable platform.
 
