@@ -6,7 +6,7 @@ resource "aws_db_instance" "main" {
 
   # Engine configuration
   engine               = "postgres"
-  engine_version       = "17.6"
+  engine_version       = "17"
   instance_class       = var.db_instance_class
   allocated_storage    = var.db_allocated_storage
   storage_type         = "gp3"
