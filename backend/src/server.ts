@@ -17,13 +17,10 @@ export async function buildServer(): Promise<FastifyInstance> {
     logger: process.env.NODE_ENV !== "development",
   });
 
-  // Setup CORS. Production is same-origin (frontend + API behind one CloudFront
-  // origin), so this allowlist is driven by APP_URL plus any extras configured
-  // via ADDITIONAL_ALLOWED_ORIGINS (see lib/allowed-origins.ts).
+  // Setup CORS
   const allowedOrigins = new Set(getAllowedOrigins());
   await server.register(cors, {
     origin: (origin, cb) => {
-      // Same-origin and non-browser requests have no Origin header.
       if (!origin) return cb(null, true);
       cb(null, allowedOrigins.has(origin));
     },
