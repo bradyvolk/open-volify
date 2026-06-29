@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="./frontend/src/assets/open-volify-logo-large.png" alt="Open Volify" width="320" />
+  <a href="https://open-volify.org/">
+    <img src="./frontend/src/assets/open-volify-logo-large.png" alt="Open Volify" width="320" />
+  </a>
 </p>
 
 <p align="center">
@@ -15,6 +17,8 @@
 
 > [!WARNING]
 > Open Volify is pre-1.0 and under active construction. APIs, schema, and features will change. It is not yet recommended for production use. Contributions, issues, and feedback are very welcome!
+>
+> This repository currently also contains the public-facing landing pages for [open-volify.org](https://open-volify.org/). These are bundled in for now but will eventually be split out of the core self-hostable platform.
 
 ## What is Open Volify?
 
