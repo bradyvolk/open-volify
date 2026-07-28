@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { authClient } from "@/lib/auth-client";
 
 import { MainTopNav } from "./main-top-nav";

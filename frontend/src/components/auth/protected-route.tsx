@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router";
 import { authClient } from "@/lib/auth-client";
 
 export function ProtectedRoute() {

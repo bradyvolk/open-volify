@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import { LeftNav } from "./left-nav/left-nav";
 
 export function PlatformLayout() {

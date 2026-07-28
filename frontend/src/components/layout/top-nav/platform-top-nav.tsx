@@ -1,6 +1,6 @@
 import { authClient } from "@/lib/auth-client";
 import { UserProfileMenu } from "@/components/auth/user-profile-menu";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import type { User } from "better-auth";
 
 import logoSmall from "@/assets/open-volify-icon-large.svg";

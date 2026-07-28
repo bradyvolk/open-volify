@@ -1,7 +1,7 @@
 import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { User } from "better-auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { PanelsTopLeft, Settings, LogOut } from "lucide-react";
 import {
   DropdownMenu,
