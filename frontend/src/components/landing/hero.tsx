@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
@@ -6,7 +7,7 @@ export function Hero() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Empower Your Community with{" "}
+            Build Your Organization with{" "}
             <span className="text-brand">OpenVolify</span>
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground sm:text-xl">
@@ -14,11 +15,8 @@ export function Hero() {
             organize, schedule, and engage volunteers for your cause.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
-            <Button size="lg" className="text-base">
-              Get Started
-            </Button>
-            <Button size="lg" variant="outline" className="text-base">
-              Learn More
+            <Button size="lg" className="text-base" asChild>
+              <Link to="/about">Learn More</Link>
             </Button>
           </div>
         </div>

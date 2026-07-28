@@ -31,7 +31,7 @@ export function MainTopNav({ user }: { user?: User }) {
                 isActive("/about") ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              About OpenVolify
+              About
             </Link>
             <a
               href="#community"
