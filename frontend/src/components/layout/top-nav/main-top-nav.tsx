@@ -17,12 +17,15 @@ export function MainTopNav({ user }: { user?: User }) {
         </Link>
         <div className="flex items-center gap-12">
           <div className="flex items-center gap-6">
-            <a
-              href="#platform"
-              className="text-md font-medium text-muted-foreground transition-colors hover:text-foreground"
+            <Link
+              to="/product"
+              className={cn(
+                "text-md font-medium transition-colors hover:text-foreground",
+                isActive("/product") ? "text-foreground" : "text-muted-foreground"
+              )}
             >
               Platform
-            </a>
+            </Link>
 
             <Link
               to="/about"
@@ -33,12 +36,15 @@ export function MainTopNav({ user }: { user?: User }) {
             >
               About
             </Link>
-            <a
-              href="#community"
-              className="text-md font-medium text-muted-foreground transition-colors hover:text-foreground"
+            <Link
+              to="/community"
+              className={cn(
+                "text-md font-medium transition-colors hover:text-foreground",
+                isActive("/community") ? "text-foreground" : "text-muted-foreground"
+              )}
             >
               Community
-            </a>
+            </Link>
           </div>
 
           <div className="flex min-w-[100px]">

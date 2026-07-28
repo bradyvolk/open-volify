@@ -5,6 +5,8 @@ import { TopNav } from "@/components/layout/top-nav/top-nav";
 import { PlatformLayout } from "@/components/layout/platform-layout";
 import { Landing } from "@/pages/landing";
 import { About } from "@/pages/about";
+import { Product } from "@/pages/product";
+import { Community } from "@/pages/community";
 import { SignIn } from "@/pages/sign-in";
 import { SignUp } from "@/pages/sign-up";
 import { Projects } from "@/pages/projects";
@@ -24,6 +26,8 @@ export function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/about" element={<About />} />
+            <Route path="/product" element={<Product />} />
+            <Route path="/community" element={<Community />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
 
