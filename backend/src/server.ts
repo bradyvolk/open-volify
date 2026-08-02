@@ -6,7 +6,7 @@ import router from "./api/router";
 import { getAllowedOrigins } from "./lib/allowed-origins";
 import { ZodError } from "zod";
 import { AppError } from "./lib/errors";
-import type { FastifyInstance } from "fastify";
+import type { FastifyError, FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -46,12 +46,16 @@ export async function buildServer(): Promise<FastifyInstance> {
     reply.sendFile("index.html");
   });
 
-  server.setErrorHandler((error, request, reply) => {
+  server.setErrorHandler<FastifyError>((error, request, reply) => {
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({ error: error.message });
     }
     if (error instanceof ZodError) {
       return reply.status(400).send({ error: "Validation failed", issues: error.issues });
+    }
+    const statusCode = typeof error.statusCode === "number" ? error.statusCode : 500;
+    if (statusCode < 500) {
+      return reply.status(statusCode).send({ error: error.message });
     }
     request.log.error(error);
     return reply.status(500).send({ error: "Internal server error" });
