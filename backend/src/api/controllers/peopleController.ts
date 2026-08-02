@@ -1,8 +1,8 @@
 import { and, eq, sql } from "drizzle-orm"
+import createError from "http-errors"
 import db from "../../db/db"
 import { contact } from "../../db/schema/contact-schema"
 import type { Contact } from "../../db/schema/contact-schema"
-import { ConflictError } from "../../lib/errors"
 
 type CreateContactInput = {
   firstName: string
@@ -59,7 +59,7 @@ export async function createContact(data: CreateContactInput): Promise<Contact> 
     return result
   } catch (error) {
     if (isUniqueConstraintViolation(error)) {
-      throw new ConflictError("A contact with this email already exists")
+      throw createError(409, "A contact with this email already exists")
     }
     throw error
   }
@@ -83,7 +83,7 @@ export async function updateContact(
     return result
   } catch (error) {
     if (isUniqueConstraintViolation(error)) {
-      throw new ConflictError("A contact with this email already exists")
+      throw createError(409, "A contact with this email already exists")
     }
     throw error
   }

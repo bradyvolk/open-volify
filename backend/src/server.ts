@@ -1,11 +1,11 @@
 import fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
+import sensible from "@fastify/sensible";
 import path from "path";
 import router from "./api/router";
 import { getAllowedOrigins } from "./lib/allowed-origins";
 import { ZodError } from "zod";
-import { AppError } from "./lib/errors";
 import type { FastifyError, FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -18,6 +18,8 @@ export async function buildServer(): Promise<FastifyInstance> {
   const server = fastify({
     logger: process.env.NODE_ENV !== "development",
   });
+
+  await server.register(sensible);
 
   // Setup CORS
   const allowedOrigins = new Set(getAllowedOrigins());
@@ -47,9 +49,6 @@ export async function buildServer(): Promise<FastifyInstance> {
   });
 
   server.setErrorHandler<FastifyError>((error, request, reply) => {
-    if (error instanceof AppError) {
-      return reply.status(error.statusCode).send({ error: error.message });
-    }
     if (error instanceof ZodError) {
       return reply.status(400).send({ error: "Validation failed", issues: error.issues });
     }

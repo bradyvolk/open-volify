@@ -1,8 +1,8 @@
 // backend/src/lib/auth-middleware.ts
 import type { FastifyRequest, FastifyReply } from "fastify"
 import type { User } from "better-auth"
+import createError from "http-errors"
 import { auth } from "../auth"
-import { ForbiddenError, UnauthorizedError } from "./errors"
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -13,7 +13,7 @@ declare module "fastify" {
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
   const session = await auth.api.getSession({ headers: request.headers as any })
   if (!session?.user) {
-    throw new UnauthorizedError()
+    throw createError(401)
   }
   request.user = session.user
 }
@@ -26,9 +26,9 @@ export const can = (permission: Record<string, string[]>) =>
         body: { userId: request.user.id, permissions: permission },
       })
     } catch {
-      throw new ForbiddenError()
+      throw createError(403)
     }
     if (!result.success) {
-      throw new ForbiddenError()
+      throw createError(403)
     }
   }
