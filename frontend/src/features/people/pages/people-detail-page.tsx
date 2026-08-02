@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { ContactForm } from "../components/contact-form"
 import { fetchContact, updateContact, deleteContact, peopleKeys } from "../api"
+import { authClient } from "@/lib/auth-client"
 import type { UpdateContactInput } from "../api"
 
 export function PeopleDetailPage() {
@@ -11,6 +12,13 @@ export function PeopleDetailPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [isEditing, setIsEditing] = useState(false)
+  const { data: session } = authClient.useSession()
+  const canDelete =
+    !!session?.user.role &&
+    authClient.admin.checkRolePermission({
+      role: session.user.role as "volunteer" | "staff" | "admin",
+      permissions: { contact: ["delete"] },
+    })
 
   const { data: contact, isLoading } = useQuery({
     queryKey: peopleKeys.detail(id!),
@@ -65,16 +73,24 @@ export function PeopleDetailPage() {
               <Button variant="outline" onClick={() => setIsEditing(true)}>
                 Edit
               </Button>
-              <Button
-                variant="destructive"
-                onClick={() => deleteMutation.mutate()}
-                disabled={deleteMutation.isPending}
-              >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
-              </Button>
+              {canDelete && (
+                <Button
+                  variant="destructive"
+                  onClick={() => deleteMutation.mutate()}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                </Button>
+              )}
             </div>
           )}
         </div>
+
+        {(updateMutation.isError || deleteMutation.isError) && (
+          <div className="mb-6 p-4 rounded-md bg-destructive/10 text-destructive text-sm">
+            Something went wrong. Please try again.
+          </div>
+        )}
 
         {isEditing ? (
           <ContactForm
