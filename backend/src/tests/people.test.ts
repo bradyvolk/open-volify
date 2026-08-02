@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "bun:test"
-import { eq } from "drizzle-orm"
+import { eq, or } from "drizzle-orm"
 import db from "../db/db"
 import { contact } from "../db/schema/contact-schema"
 import {
@@ -9,11 +9,13 @@ import {
   updateContact,
   deleteContact,
 } from "../api/controllers/peopleController"
+import { ConflictError } from "../lib/errors"
 
 const TEST_EMAIL = "test-contact@example.com"
+const OTHER_EMAIL = "other-contact@example.com"
 
 async function cleanup() {
-  await db.delete(contact).where(eq(contact.email, TEST_EMAIL))
+  await db.delete(contact).where(or(eq(contact.email, TEST_EMAIL), eq(contact.email, OTHER_EMAIL)))
 }
 
 describe("peopleController", () => {
@@ -32,6 +34,21 @@ describe("peopleController", () => {
       expect(result.email).toBe(TEST_EMAIL)
       expect(result.role).toBe("volunteer")
       expect(result.id).toBeDefined()
+    })
+  })
+
+  describe("createContact - duplicate email", () => {
+    it("throws ConflictError when email already exists", async () => {
+      await createContact({ firstName: "Jane", lastName: "Doe", email: TEST_EMAIL, role: "volunteer" })
+
+      let caught: unknown
+      try {
+        await createContact({ firstName: "Jane2", lastName: "Doe2", email: TEST_EMAIL, role: "volunteer" })
+      } catch (error) {
+        caught = error
+      }
+
+      expect(caught).toBeInstanceOf(ConflictError)
     })
   })
 
@@ -75,6 +92,25 @@ describe("peopleController", () => {
       const created = await createContact({ firstName: "Jane", lastName: "Doe", email: TEST_EMAIL, role: "volunteer" })
       const result = await updateContact(created.id, { firstName: "Updated" })
       expect(result?.firstName).toBe("Updated")
+    })
+
+    it("throws ConflictError when updating to an email already in use", async () => {
+      const other = await createContact({
+        firstName: "Other",
+        lastName: "Person",
+        email: OTHER_EMAIL,
+        role: "volunteer",
+      })
+      const created = await createContact({ firstName: "Jane", lastName: "Doe", email: TEST_EMAIL, role: "volunteer" })
+
+      let caught: unknown
+      try {
+        await updateContact(created.id, { email: other.email })
+      } catch (error) {
+        caught = error
+      }
+
+      expect(caught).toBeInstanceOf(ConflictError)
     })
   })
 
