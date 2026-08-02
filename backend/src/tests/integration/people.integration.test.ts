@@ -1,52 +1,32 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test"
 import type { FastifyInstance } from "fastify"
 import { buildTestServer } from "../helpers/test-server"
-import { createAuthedUser, deleteTestUser } from "../helpers/test-auth"
+import { actingAs, cleanupActingAsUsers } from "../helpers/test-auth"
 
 describe("People routes", () => {
   let server: FastifyInstance
   const createdContactIds: string[] = []
-  const createdUserIds: string[] = []
 
   beforeAll(async () => {
     server = await buildTestServer()
   })
 
   afterEach(async () => {
+    const admin = await actingAs(server, "admin")
     while (createdContactIds.length > 0) {
       const id = createdContactIds.pop()!
       await server.inject({
         method: "DELETE",
         url: `/api/people/${id}`,
-        cookies: (await createAdmin()).cookies,
+        cookies: admin.cookies,
       })
     }
   })
 
   afterAll(async () => {
-    while (createdUserIds.length > 0) {
-      await deleteTestUser(createdUserIds.pop()!)
-    }
+    await cleanupActingAsUsers(server)
     await server.close()
   })
-
-  async function createAdmin() {
-    const authed = await createAuthedUser(server, "admin")
-    createdUserIds.push(authed.user.id)
-    return authed
-  }
-
-  async function createVolunteer() {
-    const authed = await createAuthedUser(server, "volunteer")
-    createdUserIds.push(authed.user.id)
-    return authed
-  }
-
-  async function createStaff() {
-    const authed = await createAuthedUser(server, "staff")
-    createdUserIds.push(authed.user.id)
-    return authed
-  }
 
   describe("without a session", () => {
     it("returns 401 for every route", async () => {
@@ -67,7 +47,7 @@ describe("People routes", () => {
 
   describe("permissions", () => {
     it("forbids a volunteer from creating a contact", async () => {
-      const { cookies } = await createVolunteer()
+      const { cookies } = await actingAs(server, "volunteer")
       const firstName = `NoCreate-${crypto.randomUUID()}`
       const response = await server.inject({
         method: "POST",
@@ -77,7 +57,7 @@ describe("People routes", () => {
       })
       expect(response.statusCode).toBe(403)
 
-      const admin = await createAdmin()
+      const admin = await actingAs(server, "admin")
       const list = await server.inject({
         method: "GET",
         url: "/api/people",
@@ -89,7 +69,7 @@ describe("People routes", () => {
     })
 
     it("forbids staff from deleting a contact", async () => {
-      const admin = await createAdmin()
+      const admin = await actingAs(server, "admin")
       const created = await server.inject({
         method: "POST",
         url: "/api/people",
@@ -99,7 +79,7 @@ describe("People routes", () => {
       const contactId = created.json().id
       createdContactIds.push(contactId)
 
-      const staffUser = await createStaff()
+      const staffUser = await actingAs(server, "staff")
       const response = await server.inject({
         method: "DELETE",
         url: `/api/people/${contactId}`,
@@ -116,7 +96,7 @@ describe("People routes", () => {
     })
 
     it("allows a volunteer to read contacts", async () => {
-      const { cookies } = await createVolunteer()
+      const { cookies } = await actingAs(server, "volunteer")
       const response = await server.inject({ method: "GET", url: "/api/people", cookies })
       expect(response.statusCode).toBe(200)
     })
@@ -124,7 +104,7 @@ describe("People routes", () => {
 
   describe("validation", () => {
     it("returns 400 when required fields are missing", async () => {
-      const { cookies } = await createAdmin()
+      const { cookies } = await actingAs(server, "admin")
       const response = await server.inject({
         method: "POST",
         url: "/api/people",
@@ -135,7 +115,7 @@ describe("People routes", () => {
     })
 
     it("returns 400 for an invalid email", async () => {
-      const { cookies } = await createAdmin()
+      const { cookies } = await actingAs(server, "admin")
       const response = await server.inject({
         method: "POST",
         url: "/api/people",
@@ -148,7 +128,7 @@ describe("People routes", () => {
 
   describe("duplicate email", () => {
     it("returns 409 when creating a contact with an email already in use", async () => {
-      const { cookies } = await createAdmin()
+      const { cookies } = await actingAs(server, "admin")
       const email = `dupe-${crypto.randomUUID()}@example.com`
 
       const first = await server.inject({
@@ -171,7 +151,7 @@ describe("People routes", () => {
 
   describe("CRUD happy path", () => {
     it("creates, reads, updates, and deletes a contact", async () => {
-      const { cookies } = await createAdmin()
+      const { cookies } = await actingAs(server, "admin")
 
       const create = await server.inject({
         method: "POST",
