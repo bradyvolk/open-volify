@@ -10,7 +10,7 @@ export type TestRole = "volunteer" | "staff" | "admin"
 
 function assertLocalDatabase(): void {
   const url = process.env.DATABASE_URL ?? ""
-  const isLocal = /^(postgres:\/\/[^/]*@)?(localhost|127\.0\.0\.1)/.test(url)
+  const isLocal = /^(postgres:\/\/[^/]*@)?(localhost|127\.0\.0\.1)(:|\/|$)/.test(url)
   if (!isLocal) {
     throw new Error(
       "Refusing to seed test users: DATABASE_URL does not look like a local database. " +
