@@ -68,13 +68,24 @@ describe("People routes", () => {
   describe("permissions", () => {
     it("forbids a volunteer from creating a contact", async () => {
       const { cookies } = await createVolunteer()
+      const firstName = `NoCreate-${crypto.randomUUID()}`
       const response = await server.inject({
         method: "POST",
         url: "/api/people",
         cookies,
-        payload: { firstName: "A", lastName: "B", role: "volunteer" },
+        payload: { firstName, lastName: "B", role: "volunteer" },
       })
       expect(response.statusCode).toBe(403)
+
+      const admin = await createAdmin()
+      const list = await server.inject({
+        method: "GET",
+        url: "/api/people",
+        cookies: admin.cookies,
+      })
+      expect(list.json().some((c: { firstName: string }) => c.firstName === firstName)).toBe(
+        false,
+      )
     })
 
     it("forbids staff from deleting a contact", async () => {
@@ -95,6 +106,13 @@ describe("People routes", () => {
         cookies: staffUser.cookies,
       })
       expect(response.statusCode).toBe(403)
+
+      const stillThere = await server.inject({
+        method: "GET",
+        url: `/api/people/${contactId}`,
+        cookies: admin.cookies,
+      })
+      expect(stillThere.statusCode).toBe(200)
     })
 
     it("allows a volunteer to read contacts", async () => {
