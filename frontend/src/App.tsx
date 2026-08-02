@@ -1,12 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
-import { Routes, Route } from "react-router";
-import { Footer } from "@/components/layout/footer";
+import { Routes, Route, Navigate } from "react-router";
 import { TopNav } from "@/components/layout/top-nav/top-nav";
 import { PlatformLayout } from "@/components/layout/platform-layout";
-import { Landing } from "@/pages/landing";
-import { About } from "@/pages/about";
-import { Product } from "@/pages/product";
-import { Community } from "@/pages/community";
 import { SignIn } from "@/pages/sign-in";
 import { SignUp } from "@/pages/sign-up";
 import { Projects } from "@/pages/projects";
@@ -24,10 +19,7 @@ export function App() {
         <TopNav />
         <main className="flex-1 bg-gradient-to-tr from-primary/10 to-background min-h-screen">
           <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/community" element={<Community />} />
+            <Route path="/" element={<Navigate to="/sign-in" replace />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
 
@@ -42,7 +34,6 @@ export function App() {
             </Route>
           </Routes>
         </main>
-        <Footer />
       </div>
     </BrowserRouter>
   );
