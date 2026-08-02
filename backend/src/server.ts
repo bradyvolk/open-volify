@@ -4,6 +4,8 @@ import cors from "@fastify/cors";
 import path from "path";
 import router from "./api/router";
 import { getAllowedOrigins } from "./lib/allowed-origins";
+import { ZodError } from "zod";
+import { AppError } from "./lib/errors";
 import type { FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -42,6 +44,17 @@ export async function buildServer(): Promise<FastifyInstance> {
 
   server.setNotFoundHandler((req, reply) => {
     reply.sendFile("index.html");
+  });
+
+  server.setErrorHandler((error, request, reply) => {
+    if (error instanceof AppError) {
+      return reply.status(error.statusCode).send({ error: error.message });
+    }
+    if (error instanceof ZodError) {
+      return reply.status(400).send({ error: "Validation failed", issues: error.issues });
+    }
+    request.log.error(error);
+    return reply.status(500).send({ error: "Internal server error" });
   });
 
   // Register API routes
