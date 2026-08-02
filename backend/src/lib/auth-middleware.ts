@@ -2,6 +2,7 @@
 import type { FastifyRequest, FastifyReply } from "fastify"
 import type { User } from "better-auth"
 import { auth } from "../auth"
+import { ForbiddenError, UnauthorizedError } from "./errors"
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -12,21 +13,22 @@ declare module "fastify" {
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
   const session = await auth.api.getSession({ headers: request.headers as any })
   if (!session?.user) {
-    return reply.status(401).send({ error: "Unauthorized" })
+    throw new UnauthorizedError()
   }
   request.user = session.user
 }
 
 export const can = (permission: Record<string, string[]>) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
+    let result: { success: boolean }
     try {
-      const result = await auth.api.userHasPermission({
+      result = await auth.api.userHasPermission({
         body: { userId: request.user.id, permissions: permission },
       })
-      if (!result.success) {
-        return reply.status(403).send({ error: "Forbidden" })
-      }
     } catch {
-      return reply.status(403).send({ error: "Forbidden" })
+      throw new ForbiddenError()
+    }
+    if (!result.success) {
+      throw new ForbiddenError()
     }
   }
