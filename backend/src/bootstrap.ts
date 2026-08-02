@@ -9,4 +9,10 @@ await loadSecrets();
 
 // Dynamic import ensures server.ts (and its transitive imports like db.ts and
 // auth.ts) only initialize after process.env is fully populated.
-await import("./server");
+const { buildServer } = await import("./server");
+const server = await buildServer();
+
+await server.listen({
+  port: Number(process.env.PORT) || 3006,
+  host: "0.0.0.0",
+});

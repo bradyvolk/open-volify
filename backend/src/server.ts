@@ -49,10 +49,3 @@ export async function buildServer(): Promise<FastifyInstance> {
 
   return server;
 }
-
-const server = await buildServer();
-
-await server.listen({
-  port: Number(process.env.PORT) || 3006,
-  host: "0.0.0.0",
-});
