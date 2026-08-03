@@ -1,31 +1,32 @@
 // backend/src/lib/auth-middleware.ts
-import type { FastifyRequest, FastifyReply } from "fastify"
-import type { User } from "better-auth"
-import { httpErrors } from "@fastify/sensible"
-import { auth } from "../auth"
+import type { FastifyRequest, FastifyReply } from "fastify";
+import type { User } from "better-auth";
+import { httpErrors } from "@fastify/sensible";
+import { auth } from "../auth";
 
 declare module "fastify" {
   interface FastifyRequest {
-    user: User
+    user: User;
   }
 }
 
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
-  const session = await auth.api.getSession({ headers: request.headers as any })
+  const session = await auth.api.getSession({ headers: request.headers as any });
   if (!session?.user) {
-    throw httpErrors.unauthorized()
+    throw httpErrors.unauthorized();
   }
-  request.user = session.user
+  request.user = session.user;
 }
 
-export const can = (permission: Record<string, string[]>) =>
+export const can =
+  (permission: Record<string, string[]>) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
     const result = await auth.api
       .userHasPermission({
         body: { userId: request.user.id, permissions: permission },
       })
-      .catch(() => ({ success: false }))
+      .catch(() => ({ success: false }));
     if (!result.success) {
-      throw httpErrors.forbidden()
+      throw httpErrors.forbidden();
     }
-  }
+  };

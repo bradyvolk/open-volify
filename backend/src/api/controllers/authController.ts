@@ -22,10 +22,7 @@ export default async function authController(fastify: FastifyInstance) {
         // Handle body - check if it's already a string or needs stringification
         let body: string | undefined;
         if (request.body) {
-          body =
-            typeof request.body === "string"
-              ? request.body
-              : JSON.stringify(request.body);
+          body = typeof request.body === "string" ? request.body : JSON.stringify(request.body);
         }
 
         // Create Fetch API-compatible request

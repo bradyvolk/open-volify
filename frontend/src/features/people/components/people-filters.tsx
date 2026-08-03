@@ -1,16 +1,16 @@
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import type { ContactFilters, ContactRole } from "../api"
+} from "@/components/ui/select";
+import type { ContactFilters, ContactRole } from "../api";
 
 interface PeopleFiltersProps {
-  filters: ContactFilters
-  onChange: (filters: ContactFilters) => void
+  filters: ContactFilters;
+  onChange: (filters: ContactFilters) => void;
 }
 
 export function PeopleFilters({ filters, onChange }: PeopleFiltersProps) {
@@ -19,9 +19,7 @@ export function PeopleFilters({ filters, onChange }: PeopleFiltersProps) {
       <Input
         placeholder="Search by name..."
         value={filters.search ?? ""}
-        onChange={(e) =>
-          onChange({ ...filters, search: e.target.value || undefined })
-        }
+        onChange={(e) => onChange({ ...filters, search: e.target.value || undefined })}
         className="max-w-xs"
       />
       <Select
@@ -44,5 +42,5 @@ export function PeopleFilters({ filters, onChange }: PeopleFiltersProps) {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

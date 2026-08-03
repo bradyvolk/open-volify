@@ -1,19 +1,17 @@
-import { useNavigate } from "react-router"
-import type { Contact } from "../api"
+import { useNavigate } from "react-router";
+import type { Contact } from "../api";
 
 interface PeopleTableProps {
-  contacts: Contact[]
+  contacts: Contact[];
 }
 
 export function PeopleTable({ contacts }: PeopleTableProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   if (contacts.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground text-sm">
-        No contacts found.
-      </div>
-    )
+      <div className="text-center py-12 text-muted-foreground text-sm">No contacts found.</div>
+    );
   }
 
   return (
@@ -38,12 +36,8 @@ export function PeopleTable({ contacts }: PeopleTableProps) {
               <td className="px-4 py-3 font-medium">
                 {contact.firstName} {contact.lastName}
               </td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {contact.email ?? "—"}
-              </td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {contact.phone ?? "—"}
-              </td>
+              <td className="px-4 py-3 text-muted-foreground">{contact.email ?? "—"}</td>
+              <td className="px-4 py-3 text-muted-foreground">{contact.phone ?? "—"}</td>
               <td className="px-4 py-3 capitalize">{contact.role}</td>
               <td className="px-4 py-3 text-muted-foreground">
                 {new Date(contact.createdAt).toLocaleDateString()}
@@ -53,5 +47,5 @@ export function PeopleTable({ contacts }: PeopleTableProps) {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

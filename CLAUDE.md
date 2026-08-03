@@ -21,6 +21,8 @@ bun dev:frontend             # frontend dev server at http://localhost:3001
 bun dev:server               # backend API server at http://localhost:3006
 bun run build                # build frontend to dist/ (required before Docker)
 bun test                     # run tests
+bun run format               # format all TypeScript files with Prettier
+bun run format:check         # check formatting without writing (used in CI)
 
 # DB migrations (run from project root, drizzle.config.ts is in backend/)
 cd backend && bun drizzle-kit push    # push schema to local DB

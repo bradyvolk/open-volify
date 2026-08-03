@@ -21,9 +21,7 @@ export function Organizations() {
           {/* Placeholder Organization Card */}
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-2">Sample Organization</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              5 members · 3 projects
-            </p>
+            <p className="text-sm text-muted-foreground mb-4">5 members · 3 projects</p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
                 View
@@ -37,9 +35,7 @@ export function Organizations() {
           {/* Empty State Card */}
           <Card className="p-6 border-dashed">
             <div className="flex flex-col items-center justify-center h-full text-center py-4">
-              <p className="text-sm text-muted-foreground mb-3">
-                No organizations yet
-              </p>
+              <p className="text-sm text-muted-foreground mb-3">No organizations yet</p>
               <Button variant="ghost" size="sm">
                 + Add Organization
               </Button>

@@ -1,4 +1,4 @@
-const isProduction = process.env.NODE_ENV === "production"
+const isProduction = process.env.NODE_ENV === "production";
 
 /**
  * Extra origins supplied by self-hosters, e.g. when accessing the app via the
@@ -11,7 +11,7 @@ export function getAdditionalAllowedOrigins(): string[] {
   return (process.env.ADDITIONAL_ALLOWED_ORIGINS ?? "")
     .split(",")
     .map((origin) => origin.trim())
-    .filter(Boolean)
+    .filter(Boolean);
 }
 
 /**
@@ -23,9 +23,9 @@ export function getAdditionalAllowedOrigins(): string[] {
  * development, where the frontend (:3001) calls the API (:3006) cross-origin.
  */
 export function getAllowedOrigins(): string[] {
-  const origins: string[] = []
-  if (!isProduction) origins.push("http://localhost:3001")
-  if (process.env.APP_URL) origins.push(process.env.APP_URL)
-  origins.push(...getAdditionalAllowedOrigins())
-  return origins
+  const origins: string[] = [];
+  if (!isProduction) origins.push("http://localhost:3001");
+  if (process.env.APP_URL) origins.push(process.env.APP_URL);
+  origins.push(...getAdditionalAllowedOrigins());
+  return origins;
 }

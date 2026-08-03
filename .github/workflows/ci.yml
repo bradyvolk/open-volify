@@ -46,6 +46,9 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
+      - name: Check formatting
+        run: bun run format:check
+
       - name: Run migrations
         run: bun run db:migrate
 
