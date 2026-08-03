@@ -1,5 +1,5 @@
 import { and, eq, sql } from "drizzle-orm"
-import createError from "http-errors"
+import { httpErrors } from "@fastify/sensible"
 import db from "../../db/db"
 import { contact } from "../../db/schema/contact-schema"
 import type { Contact } from "../../db/schema/contact-schema"
@@ -20,20 +20,19 @@ type CreateContactInput = {
 }
 
 function isUniqueConstraintViolation(error: unknown): boolean {
-  if (typeof error !== "object" || error === null) return false
+  const err = error as { code?: unknown; cause?: { code?: unknown } } | null
+  return err?.code === "23505" || err?.cause?.code === "23505"
+}
 
-  const err = error as Record<string, unknown>
-
-  // Direct check for postgres error code
-  if (err.code === "23505") return true
-
-  // Check nested cause (Drizzle wraps postgres errors)
-  if (err.cause && typeof err.cause === "object") {
-    const cause = err.cause as Record<string, unknown>
-    if (cause.code === "23505") return true
+async function withUniqueEmailCheck<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn()
+  } catch (error) {
+    if (isUniqueConstraintViolation(error)) {
+      throw httpErrors.conflict("A contact with this email already exists")
+    }
+    throw error
   }
-
-  return false
 }
 
 export async function listContacts(filters: {
@@ -50,19 +49,14 @@ export async function listContacts(filters: {
 }
 
 export async function createContact(data: CreateContactInput): Promise<Contact> {
-  try {
+  return withUniqueEmailCheck(async () => {
     const [result] = await db
       .insert(contact)
       .values({ id: crypto.randomUUID(), ...data })
       .returning()
     if (!result) throw new Error("Failed to create contact")
     return result
-  } catch (error) {
-    if (isUniqueConstraintViolation(error)) {
-      throw createError(409, "A contact with this email already exists")
-    }
-    throw error
-  }
+  })
 }
 
 export async function getContactById(id: string): Promise<Contact | undefined> {
@@ -74,19 +68,14 @@ export async function updateContact(
   id: string,
   data: Partial<CreateContactInput>,
 ): Promise<Contact | undefined> {
-  try {
+  return withUniqueEmailCheck(async () => {
     const [result] = await db
       .update(contact)
       .set(data)
       .where(eq(contact.id, id))
       .returning()
     return result
-  } catch (error) {
-    if (isUniqueConstraintViolation(error)) {
-      throw createError(409, "A contact with this email already exists")
-    }
-    throw error
-  }
+  })
 }
 
 export async function deleteContact(id: string): Promise<void> {

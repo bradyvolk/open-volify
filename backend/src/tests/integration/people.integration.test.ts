@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test"
 import type { FastifyInstance } from "fastify"
+import { inArray } from "drizzle-orm"
+import db from "../../db/db"
+import { contact } from "../../db/schema/contact-schema"
 import { buildTestServer } from "../helpers/test-server"
 import { createAuthedUser, deleteTestUsers } from "../helpers/test-auth"
 
@@ -14,20 +17,17 @@ describe("People routes", () => {
     server = await buildTestServer()
     // One user per role for the whole file, since most tests just need "a" user of a given
     // role. A test that needs a second, distinct same-role user can call createAuthedUser again.
-    admin = await createAuthedUser(server, "admin")
-    staff = await createAuthedUser(server, "staff")
-    volunteer = await createAuthedUser(server, "volunteer")
+    ;[admin, staff, volunteer] = await Promise.all([
+      createAuthedUser(server, "admin"),
+      createAuthedUser(server, "staff"),
+      createAuthedUser(server, "volunteer"),
+    ])
   })
 
   afterEach(async () => {
-    while (createdContactIds.length > 0) {
-      const id = createdContactIds.pop()!
-      await server.inject({
-        method: "DELETE",
-        url: `/api/people/${id}`,
-        cookies: admin.cookies,
-      })
-    }
+    const ids = createdContactIds.splice(0)
+    if (ids.length === 0) return
+    await db.delete(contact).where(inArray(contact.id, ids))
   })
 
   afterAll(async () => {

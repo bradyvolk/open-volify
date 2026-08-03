@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify"
 import { z } from "zod"
-import createError from "http-errors"
+import { httpErrors } from "@fastify/sensible"
 import { authenticate, can } from "../../lib/auth-middleware"
 import {
   listContacts,
@@ -57,7 +57,7 @@ export default async function peopleRoutes(fastify: FastifyInstance) {
     async handler(request) {
       const { id } = request.params as { id: string }
       const result = await getContactById(id)
-      if (!result) throw createError(404, "Contact not found")
+      if (!result) throw httpErrors.notFound("Contact not found")
       return result
     },
   })
@@ -68,7 +68,7 @@ export default async function peopleRoutes(fastify: FastifyInstance) {
       const { id } = request.params as { id: string }
       const body = UpdateContactSchema.parse(request.body)
       const result = await updateContact(id, body)
-      if (!result) throw createError(404, "Contact not found")
+      if (!result) throw httpErrors.notFound("Contact not found")
       return result
     },
   })
