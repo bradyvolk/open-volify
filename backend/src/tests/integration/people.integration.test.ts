@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test"
 import type { FastifyInstance } from "fastify"
 import { buildTestServer } from "../helpers/test-server"
-import { createAuthedUser, deleteTestUser } from "../helpers/test-auth"
+import { createAuthedUser, deleteTestUsers } from "../helpers/test-auth"
 
 describe("People routes", () => {
   let server: FastifyInstance
@@ -31,9 +31,7 @@ describe("People routes", () => {
   })
 
   afterAll(async () => {
-    await deleteTestUser(admin.user.id)
-    await deleteTestUser(staff.user.id)
-    await deleteTestUser(volunteer.user.id)
+    await deleteTestUsers([admin.user.id, staff.user.id, volunteer.user.id])
     await server.close()
   })
 

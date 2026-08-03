@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 import { hashPassword } from "better-auth/crypto"
 import type { FastifyInstance } from "fastify"
 import type { UserRole } from "@shared/permissions"
@@ -95,4 +95,10 @@ export async function createAuthedUser(server: FastifyInstance, role: UserRole) 
 
 export async function deleteTestUser(userId: string): Promise<void> {
   await db.delete(user).where(eq(user.id, userId))
+}
+
+/** Deletes several test users in one statement. Prefer this over looping {@link deleteTestUser}. */
+export async function deleteTestUsers(userIds: string[]): Promise<void> {
+  if (userIds.length === 0) return
+  await db.delete(user).where(inArray(user.id, userIds))
 }
