@@ -1,18 +1,25 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test"
 import type { FastifyInstance } from "fastify"
 import { buildTestServer } from "../helpers/test-server"
-import { actingAs, cleanupActingAsUsers } from "../helpers/test-auth"
+import { createAuthedUser, deleteTestUser } from "../helpers/test-auth"
 
 describe("People routes", () => {
   let server: FastifyInstance
+  let admin: Awaited<ReturnType<typeof createAuthedUser>>
+  let staff: Awaited<ReturnType<typeof createAuthedUser>>
+  let volunteer: Awaited<ReturnType<typeof createAuthedUser>>
   const createdContactIds: string[] = []
 
   beforeAll(async () => {
     server = await buildTestServer()
+    // One user per role for the whole file, since most tests just need "a" user of a given
+    // role. A test that needs a second, distinct same-role user can call createAuthedUser again.
+    admin = await createAuthedUser(server, "admin")
+    staff = await createAuthedUser(server, "staff")
+    volunteer = await createAuthedUser(server, "volunteer")
   })
 
   afterEach(async () => {
-    const admin = await actingAs(server, "admin")
     while (createdContactIds.length > 0) {
       const id = createdContactIds.pop()!
       await server.inject({
@@ -24,7 +31,9 @@ describe("People routes", () => {
   })
 
   afterAll(async () => {
-    await cleanupActingAsUsers(server)
+    await deleteTestUser(admin.user.id)
+    await deleteTestUser(staff.user.id)
+    await deleteTestUser(volunteer.user.id)
     await server.close()
   })
 
@@ -47,17 +56,15 @@ describe("People routes", () => {
 
   describe("permissions", () => {
     it("forbids a volunteer from creating a contact", async () => {
-      const { cookies } = await actingAs(server, "volunteer")
       const firstName = `NoCreate-${crypto.randomUUID()}`
       const response = await server.inject({
         method: "POST",
         url: "/api/people",
-        cookies,
+        cookies: volunteer.cookies,
         payload: { firstName, lastName: "B", role: "volunteer" },
       })
       expect(response.statusCode).toBe(403)
 
-      const admin = await actingAs(server, "admin")
       const list = await server.inject({
         method: "GET",
         url: "/api/people",
@@ -69,7 +76,6 @@ describe("People routes", () => {
     })
 
     it("forbids staff from deleting a contact", async () => {
-      const admin = await actingAs(server, "admin")
       const created = await server.inject({
         method: "POST",
         url: "/api/people",
@@ -79,11 +85,10 @@ describe("People routes", () => {
       const contactId = created.json().id
       createdContactIds.push(contactId)
 
-      const staffUser = await actingAs(server, "staff")
       const response = await server.inject({
         method: "DELETE",
         url: `/api/people/${contactId}`,
-        cookies: staffUser.cookies,
+        cookies: staff.cookies,
       })
       expect(response.statusCode).toBe(403)
 
@@ -96,30 +101,31 @@ describe("People routes", () => {
     })
 
     it("allows a volunteer to read contacts", async () => {
-      const { cookies } = await actingAs(server, "volunteer")
-      const response = await server.inject({ method: "GET", url: "/api/people", cookies })
+      const response = await server.inject({
+        method: "GET",
+        url: "/api/people",
+        cookies: volunteer.cookies,
+      })
       expect(response.statusCode).toBe(200)
     })
   })
 
   describe("validation", () => {
     it("returns 400 when required fields are missing", async () => {
-      const { cookies } = await actingAs(server, "admin")
       const response = await server.inject({
         method: "POST",
         url: "/api/people",
-        cookies,
+        cookies: admin.cookies,
         payload: { firstName: "A" },
       })
       expect(response.statusCode).toBe(400)
     })
 
     it("returns 400 for an invalid email", async () => {
-      const { cookies } = await actingAs(server, "admin")
       const response = await server.inject({
         method: "POST",
         url: "/api/people",
-        cookies,
+        cookies: admin.cookies,
         payload: { firstName: "A", lastName: "B", role: "volunteer", email: "not-an-email" },
       })
       expect(response.statusCode).toBe(400)
@@ -128,13 +134,12 @@ describe("People routes", () => {
 
   describe("duplicate email", () => {
     it("returns 409 when creating a contact with an email already in use", async () => {
-      const { cookies } = await actingAs(server, "admin")
       const email = `dupe-${crypto.randomUUID()}@example.com`
 
       const first = await server.inject({
         method: "POST",
         url: "/api/people",
-        cookies,
+        cookies: admin.cookies,
         payload: { firstName: "A", lastName: "B", role: "volunteer", email },
       })
       createdContactIds.push(first.json().id)
@@ -142,7 +147,7 @@ describe("People routes", () => {
       const second = await server.inject({
         method: "POST",
         url: "/api/people",
-        cookies,
+        cookies: admin.cookies,
         payload: { firstName: "C", lastName: "D", role: "volunteer", email },
       })
       expect(second.statusCode).toBe(409)
@@ -151,12 +156,10 @@ describe("People routes", () => {
 
   describe("CRUD happy path", () => {
     it("creates, reads, updates, and deletes a contact", async () => {
-      const { cookies } = await actingAs(server, "admin")
-
       const create = await server.inject({
         method: "POST",
         url: "/api/people",
-        cookies,
+        cookies: admin.cookies,
         payload: { firstName: "Pat", lastName: "Lee", role: "volunteer" },
       })
       expect(create.statusCode).toBe(201)
@@ -166,7 +169,7 @@ describe("People routes", () => {
       const read = await server.inject({
         method: "GET",
         url: `/api/people/${contactRecord.id}`,
-        cookies,
+        cookies: admin.cookies,
       })
       expect(read.statusCode).toBe(200)
       expect(read.json().id).toBe(contactRecord.id)
@@ -174,7 +177,7 @@ describe("People routes", () => {
       const update = await server.inject({
         method: "PATCH",
         url: `/api/people/${contactRecord.id}`,
-        cookies,
+        cookies: admin.cookies,
         payload: { lastName: "Updated" },
       })
       expect(update.statusCode).toBe(200)
@@ -183,14 +186,14 @@ describe("People routes", () => {
       const del = await server.inject({
         method: "DELETE",
         url: `/api/people/${contactRecord.id}`,
-        cookies,
+        cookies: admin.cookies,
       })
       expect(del.statusCode).toBe(204)
 
       const afterDelete = await server.inject({
         method: "GET",
         url: `/api/people/${contactRecord.id}`,
-        cookies,
+        cookies: admin.cookies,
       })
       expect(afterDelete.statusCode).toBe(404)
     })

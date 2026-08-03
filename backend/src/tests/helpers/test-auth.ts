@@ -1,17 +1,11 @@
 import { eq } from "drizzle-orm"
 import { hashPassword } from "better-auth/crypto"
 import type { FastifyInstance } from "fastify"
+import type { UserRole } from "@shared/permissions"
 import db from "../../db/db"
 import { user, account } from "../../db/schema/auth-schema"
 
 export const TEST_PASSWORD = "Test-Password-123!"
-
-export type TestRole = "volunteer" | "staff" | "admin"
-
-type AuthedTestUser = Awaited<ReturnType<typeof createAuthedUser>>
-
-/** Per-server cache of `actingAs` sessions, so each role is only signed in once per test file. */
-const roleSessionCache = new WeakMap<FastifyInstance, Map<TestRole, AuthedTestUser>>()
 
 /**
  * Guards test-only helpers (seeding users, deleting users) from ever running against a
@@ -29,7 +23,7 @@ function assertLocalDatabase(): void {
 }
 
 /** Inserts a test user + credential account directly via Drizzle, bypassing the sign-up route. */
-export async function createTestUser(role: TestRole) {
+export async function createTestUser(role: UserRole) {
   assertLocalDatabase()
 
   const id = crypto.randomUUID()
@@ -87,8 +81,13 @@ export async function signInTestUser(
   return { [sessionCookie.name]: sessionCookie.value }
 }
 
-/** Creates a fresh test user for `role` and signs them in. Prefer {@link actingAs} in tests. */
-export async function createAuthedUser(server: FastifyInstance, role: TestRole) {
+/**
+ * Creates a fresh test user for `role` and signs them in. Each call creates a distinct user, so
+ * a test that needs two different admins (for example) can just call this twice. To avoid
+ * re-signing-in (and re-hashing a password) on every test, call this once per role in a file's
+ * `beforeAll` and reuse the returned `{ user, cookies }` from a local variable.
+ */
+export async function createAuthedUser(server: FastifyInstance, role: UserRole) {
   const testUser = await createTestUser(role)
   const cookies = await signInTestUser(server, testUser.email)
   return { user: testUser, cookies }
@@ -96,37 +95,4 @@ export async function createAuthedUser(server: FastifyInstance, role: TestRole) 
 
 export async function deleteTestUser(userId: string): Promise<void> {
   await db.delete(user).where(eq(user.id, userId))
-}
-
-/**
- * The `Sanctum::actingAs`-equivalent for this codebase: returns a signed-in user for `role`,
- * reusing the same session for the lifetime of `server` instead of creating (and password-hashing)
- * a new user on every call. One user per role gets created per test file, not per test.
- *
- * Cleanup is handled by {@link cleanupActingAsUsers}, which should be called once in `afterAll`.
- */
-export async function actingAs(server: FastifyInstance, role: TestRole): Promise<AuthedTestUser> {
-  let cache = roleSessionCache.get(server)
-  if (!cache) {
-    cache = new Map()
-    roleSessionCache.set(server, cache)
-  }
-
-  const cached = cache.get(role)
-  if (cached) return cached
-
-  const authed = await createAuthedUser(server, role)
-  cache.set(role, authed)
-  return authed
-}
-
-/** Deletes every user created via {@link actingAs} for `server` and clears its session cache. */
-export async function cleanupActingAsUsers(server: FastifyInstance): Promise<void> {
-  const cache = roleSessionCache.get(server)
-  if (!cache) return
-
-  for (const { user: authedUser } of cache.values()) {
-    await deleteTestUser(authedUser.id)
-  }
-  roleSessionCache.delete(server)
 }
