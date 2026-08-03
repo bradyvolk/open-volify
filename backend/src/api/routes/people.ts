@@ -1,16 +1,16 @@
-import type { FastifyInstance } from "fastify"
-import { z } from "zod"
-import { httpErrors } from "@fastify/sensible"
-import { authenticate, can } from "../../lib/auth-middleware"
+import type { FastifyInstance } from "fastify";
+import { z } from "zod";
+import { httpErrors } from "@fastify/sensible";
+import { authenticate, can } from "../../lib/auth-middleware";
 import {
   listContacts,
   createContact,
   getContactById,
   updateContact,
   deleteContact,
-} from "../controllers/peopleController"
+} from "../controllers/peopleController";
 
-const ContactRoleSchema = z.enum(["volunteer", "staff", "admin"])
+const ContactRoleSchema = z.enum(["volunteer", "staff", "admin"]);
 
 const CreateContactSchema = z.object({
   firstName: z.string().min(1),
@@ -25,60 +25,60 @@ const CreateContactSchema = z.object({
   state: z.string().optional(),
   postalCode: z.string().optional(),
   country: z.string().optional(),
-})
+});
 
-const UpdateContactSchema = CreateContactSchema.partial()
+const UpdateContactSchema = CreateContactSchema.partial();
 
 const ContactQuerySchema = z.object({
   search: z.string().optional(),
   role: ContactRoleSchema.optional(),
-})
+});
 
 export default async function peopleRoutes(fastify: FastifyInstance) {
   fastify.get("/", {
     preHandler: [authenticate, can({ contact: ["read"] })],
     async handler(request) {
-      const query = ContactQuerySchema.parse(request.query)
-      return listContacts(query)
+      const query = ContactQuerySchema.parse(request.query);
+      return listContacts(query);
     },
-  })
+  });
 
   fastify.post("/", {
     preHandler: [authenticate, can({ contact: ["create"] })],
     async handler(request, reply) {
-      const body = CreateContactSchema.parse(request.body)
-      const result = await createContact(body)
-      return reply.status(201).send(result)
+      const body = CreateContactSchema.parse(request.body);
+      const result = await createContact(body);
+      return reply.status(201).send(result);
     },
-  })
+  });
 
   fastify.get("/:id", {
     preHandler: [authenticate, can({ contact: ["read"] })],
     async handler(request) {
-      const { id } = request.params as { id: string }
-      const result = await getContactById(id)
-      if (!result) throw httpErrors.notFound("Contact not found")
-      return result
+      const { id } = request.params as { id: string };
+      const result = await getContactById(id);
+      if (!result) throw httpErrors.notFound("Contact not found");
+      return result;
     },
-  })
+  });
 
   fastify.patch("/:id", {
     preHandler: [authenticate, can({ contact: ["update"] })],
     async handler(request) {
-      const { id } = request.params as { id: string }
-      const body = UpdateContactSchema.parse(request.body)
-      const result = await updateContact(id, body)
-      if (!result) throw httpErrors.notFound("Contact not found")
-      return result
+      const { id } = request.params as { id: string };
+      const body = UpdateContactSchema.parse(request.body);
+      const result = await updateContact(id, body);
+      if (!result) throw httpErrors.notFound("Contact not found");
+      return result;
     },
-  })
+  });
 
   fastify.delete("/:id", {
     preHandler: [authenticate, can({ contact: ["delete"] })],
     async handler(request, reply) {
-      const { id } = request.params as { id: string }
-      await deleteContact(id)
-      return reply.status(204).send()
+      const { id } = request.params as { id: string };
+      await deleteContact(id);
+      return reply.status(204).send();
     },
-  })
+  });
 }

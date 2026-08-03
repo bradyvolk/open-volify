@@ -41,9 +41,7 @@ export function SignUpForm() {
         email,
         password,
         callbackURL:
-          process.env.NODE_ENV === "production"
-            ? window.location.origin
-            : "http://localhost:3001",
+          process.env.NODE_ENV === "production" ? window.location.origin : "http://localhost:3001",
       });
 
       if (signUpError) {
@@ -68,9 +66,7 @@ export function SignUpForm() {
       // Redirect to verification sent page
       setIsVerificationSent(true);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
-      );
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
       setIsLoading(false);
     }
   };
@@ -105,9 +101,7 @@ export function SignUpForm() {
           <form onSubmit={handleSignUp}>
             <div className="space-y-8 border-b pb-8">
               {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-                  {error}
-                </div>
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">{error}</div>
               )}
 
               <div className="space-y-2">

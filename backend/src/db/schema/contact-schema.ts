@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const contact = pgTable("contact", {
   id: text("id").primaryKey(),
@@ -19,7 +19,7 @@ export const contact = pgTable("contact", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-})
+});
 
-export type Contact = typeof contact.$inferSelect
-export type NewContact = typeof contact.$inferInsert
+export type Contact = typeof contact.$inferSelect;
+export type NewContact = typeof contact.$inferInsert;

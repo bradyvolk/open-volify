@@ -63,10 +63,7 @@ function parseArgs(): Partial<Bun.BuildConfig> {
       continue;
     }
 
-    if (
-      !arg.includes("=") &&
-      (i === args.length - 1 || args[i + 1]?.startsWith("--"))
-    ) {
+    if (!arg.includes("=") && (i === args.length - 1 || args[i + 1]?.startsWith("--"))) {
       const key = toCamelCase(arg.slice(2));
       config[key] = true;
       continue;
@@ -127,9 +124,7 @@ const entrypoints = [...new Bun.Glob("**.html").scanSync(srcDir)]
   .map((a) => path.resolve(srcDir, a))
   .filter((dir) => !dir.includes("node_modules"));
 console.log(
-  `📄 Found ${entrypoints.length} HTML ${
-    entrypoints.length === 1 ? "file" : "files"
-  } to process\n`
+  `📄 Found ${entrypoints.length} HTML ${entrypoints.length === 1 ? "file" : "files"} to process\n`,
 );
 
 const result = await Bun.build({

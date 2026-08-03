@@ -1,47 +1,47 @@
-import { useState } from "react"
-import { useParams, useNavigate } from "react-router"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { ContactForm } from "../components/contact-form"
-import { fetchContact, updateContact, deleteContact, peopleKeys } from "../api"
-import { useCanPermission } from "@/lib/use-can-permission"
-import type { UpdateContactInput } from "../api"
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { ContactForm } from "../components/contact-form";
+import { fetchContact, updateContact, deleteContact, peopleKeys } from "../api";
+import { useCanPermission } from "@/lib/use-can-permission";
+import type { UpdateContactInput } from "../api";
 
 export function PeopleDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const [isEditing, setIsEditing] = useState(false)
-  const canDelete = useCanPermission({ contact: ["delete"] })
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(false);
+  const canDelete = useCanPermission({ contact: ["delete"] });
 
   const { data: contact, isLoading } = useQuery({
     queryKey: peopleKeys.detail(id!),
     queryFn: () => fetchContact(id!),
     enabled: !!id,
-  })
+  });
 
   const updateMutation = useMutation({
     mutationFn: (data: UpdateContactInput) => updateContact(id!, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: peopleKeys.detail(id!) })
-      setIsEditing(false)
+      queryClient.invalidateQueries({ queryKey: peopleKeys.detail(id!) });
+      setIsEditing(false);
     },
-  })
+  });
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteContact(id!),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: peopleKeys.all })
-      navigate("/platform/people")
+      queryClient.invalidateQueries({ queryKey: peopleKeys.all });
+      navigate("/platform/people");
     },
-  })
+  });
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-muted/10 flex items-center justify-center">
         <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
-    )
+    );
   }
 
   if (!contact) {
@@ -49,7 +49,7 @@ export function PeopleDetailPage() {
       <div className="min-h-screen bg-muted/10 flex items-center justify-center">
         <p className="text-sm text-muted-foreground">Contact not found.</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -111,9 +111,7 @@ export function PeopleDetailPage() {
                   {contact.addressLine2 && <p>{contact.addressLine2}</p>}
                   {(contact.city || contact.state || contact.postalCode) && (
                     <p>
-                      {[contact.city, contact.state, contact.postalCode]
-                        .filter(Boolean)
-                        .join(", ")}
+                      {[contact.city, contact.state, contact.postalCode].filter(Boolean).join(", ")}
                     </p>
                   )}
                   {contact.country && <p>{contact.country}</p>}
@@ -124,16 +122,10 @@ export function PeopleDetailPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-function Field({
-  label,
-  value,
-}: {
-  label: string
-  value: string | null | undefined
-}) {
+function Field({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div>
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
@@ -141,5 +133,5 @@ function Field({
       </p>
       <p className="text-sm">{value || "—"}</p>
     </div>
-  )
+  );
 }

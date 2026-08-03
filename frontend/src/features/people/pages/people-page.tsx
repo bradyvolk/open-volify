@@ -1,20 +1,20 @@
-import { useState } from "react"
-import { useNavigate } from "react-router"
-import { useQuery } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { PeopleFilters } from "../components/people-filters"
-import { PeopleTable } from "../components/people-table"
-import { fetchContacts, peopleKeys } from "../api"
-import type { ContactFilters } from "../api"
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { PeopleFilters } from "../components/people-filters";
+import { PeopleTable } from "../components/people-table";
+import { fetchContacts, peopleKeys } from "../api";
+import type { ContactFilters } from "../api";
 
 export function PeoplePage() {
-  const navigate = useNavigate()
-  const [filters, setFilters] = useState<ContactFilters>({})
+  const navigate = useNavigate();
+  const [filters, setFilters] = useState<ContactFilters>({});
 
   const { data: contacts = [], isLoading } = useQuery({
     queryKey: peopleKeys.list(filters),
     queryFn: () => fetchContacts(filters),
-  })
+  });
 
   return (
     <div className="min-h-screen bg-muted/10">
@@ -22,13 +22,9 @@ export function PeoplePage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">People</h1>
-            <p className="text-muted-foreground mt-2">
-              Manage your contact directory
-            </p>
+            <p className="text-muted-foreground mt-2">Manage your contact directory</p>
           </div>
-          <Button onClick={() => navigate("/platform/people/new")}>
-            Add Person
-          </Button>
+          <Button onClick={() => navigate("/platform/people/new")}>Add Person</Button>
         </div>
 
         <div className="mb-4">
@@ -36,13 +32,11 @@ export function PeoplePage() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-12 text-muted-foreground text-sm">
-            Loading...
-          </div>
+          <div className="text-center py-12 text-muted-foreground text-sm">Loading...</div>
         ) : (
           <PeopleTable contacts={contacts} />
         )}
       </div>
     </div>
-  )
+  );
 }

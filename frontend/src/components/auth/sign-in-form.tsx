@@ -41,9 +41,7 @@ export function SignInForm() {
         return;
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
-      );
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
       setIsLoading(false);
     }
   };
@@ -83,10 +81,7 @@ export function SignInForm() {
               </div>
 
               <div className="flex items-center justify-end">
-                <Link
-                  to="/forgot-password"
-                  className="text-sm text-muted-foreground"
-                >
+                <Link to="/forgot-password" className="text-sm text-muted-foreground">
                   Forgot Password?
                 </Link>
               </div>
@@ -96,9 +91,7 @@ export function SignInForm() {
               </Button>
 
               {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-                  {error}
-                </div>
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">{error}</div>
               )}
             </div>
           </form>

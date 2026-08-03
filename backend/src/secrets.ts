@@ -1,8 +1,5 @@
 import { resolve } from "path";
-import {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} from "@aws-sdk/client-secrets-manager";
+import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 
 // ---------------------------------------------------------------------------
 // Handlers
@@ -15,10 +12,8 @@ const certPath = resolve(import.meta.dir, "../certs/global-bundle.pem");
 
 function applyDatabaseSecret(raw: string): void {
   const { host, port, username, password, dbname } = JSON.parse(raw);
-  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(
-    username
-  )}:${encodeURIComponent(
-    password
+  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(
+    password,
   )}@${host}:${port}/${dbname}?sslmode=verify-full&sslrootcert=${certPath}`;
 }
 
@@ -39,19 +34,12 @@ interface SecretSpec {
   apply: (val: string) => void;
 }
 
-function hasArn(
-  spec: SecretSpec
-): spec is { arn: string; apply: (val: string) => void } {
+function hasArn(spec: SecretSpec): spec is { arn: string; apply: (val: string) => void } {
   return spec.arn != null;
 }
 
-async function fetchSecret(
-  client: SecretsManagerClient,
-  arn: string
-): Promise<string> {
-  const { SecretString } = await client.send(
-    new GetSecretValueCommand({ SecretId: arn })
-  );
+async function fetchSecret(client: SecretsManagerClient, arn: string): Promise<string> {
+  const { SecretString } = await client.send(new GetSecretValueCommand({ SecretId: arn }));
   if (!SecretString) throw new Error(`No value for secret: ${arn}`);
   return SecretString;
 }
@@ -75,7 +63,5 @@ export async function loadSecrets(): Promise<void> {
     region: process.env.AWS_REGION ?? "us-east-1",
   });
 
-  await Promise.all(
-    pending.map(({ arn, apply }) => fetchSecret(client, arn).then(apply))
-  );
+  await Promise.all(pending.map(({ arn, apply }) => fetchSecret(client, arn).then(apply)));
 }

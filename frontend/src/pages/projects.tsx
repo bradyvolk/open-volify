@@ -37,9 +37,7 @@ export function Projects() {
           {/* Empty State Card */}
           <Card className="p-6 border-dashed">
             <div className="flex flex-col items-center justify-center h-full text-center py-4">
-              <p className="text-sm text-muted-foreground mb-3">
-                No projects yet
-              </p>
+              <p className="text-sm text-muted-foreground mb-3">No projects yet</p>
               <Button variant="ghost" size="sm">
                 + Add Project
               </Button>
