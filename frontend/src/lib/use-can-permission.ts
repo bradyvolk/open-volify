@@ -1,5 +1,5 @@
 import { authClient } from "./auth-client"
-import type { AppRole } from "./permissions"
+import type { UserRole } from "@shared/permissions"
 
 type PermissionCheck = NonNullable<
   Parameters<typeof authClient.admin.checkRolePermission>[0]["permissions"]
@@ -12,7 +12,7 @@ type PermissionCheck = NonNullable<
  */
 export function useCanPermission(permissions: PermissionCheck): boolean {
   const { data: session } = authClient.useSession()
-  const role = session?.user.role as AppRole | undefined
+  const role = session?.user.role as UserRole | undefined
   if (!role) return false
 
   return authClient.admin.checkRolePermission({ role, permissions })
