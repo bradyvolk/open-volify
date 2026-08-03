@@ -20,19 +20,8 @@ type CreateContactInput = {
 }
 
 function isUniqueConstraintViolation(error: unknown): boolean {
-  const err = error as { code?: unknown; cause?: { code?: unknown } } | null
-  return err?.code === "23505" || err?.cause?.code === "23505"
-}
-
-async function withUniqueEmailCheck<T>(fn: () => Promise<T>): Promise<T> {
-  try {
-    return await fn()
-  } catch (error) {
-    if (isUniqueConstraintViolation(error)) {
-      throw httpErrors.conflict("A contact with this email already exists")
-    }
-    throw error
-  }
+  const cause = (error as { cause?: { code?: unknown } } | null)?.cause
+  return cause?.code === "23505"
 }
 
 export async function listContacts(filters: {
@@ -49,14 +38,19 @@ export async function listContacts(filters: {
 }
 
 export async function createContact(data: CreateContactInput): Promise<Contact> {
-  return withUniqueEmailCheck(async () => {
+  try {
     const [result] = await db
       .insert(contact)
       .values({ id: crypto.randomUUID(), ...data })
       .returning()
     if (!result) throw new Error("Failed to create contact")
     return result
-  })
+  } catch (error) {
+    if (isUniqueConstraintViolation(error)) {
+      throw httpErrors.conflict("A contact with this email already exists")
+    }
+    throw error
+  }
 }
 
 export async function getContactById(id: string): Promise<Contact | undefined> {
@@ -68,14 +62,19 @@ export async function updateContact(
   id: string,
   data: Partial<CreateContactInput>,
 ): Promise<Contact | undefined> {
-  return withUniqueEmailCheck(async () => {
+  try {
     const [result] = await db
       .update(contact)
       .set(data)
       .where(eq(contact.id, id))
       .returning()
     return result
-  })
+  } catch (error) {
+    if (isUniqueConstraintViolation(error)) {
+      throw httpErrors.conflict("A contact with this email already exists")
+    }
+    throw error
+  }
 }
 
 export async function deleteContact(id: string): Promise<void> {
