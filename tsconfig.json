@@ -22,7 +22,8 @@
     "noImplicitOverride": true,
 
     "paths": {
-      "@/*": ["./frontend/src/*"]
+      "@/*": ["./frontend/src/*"],
+      "@shared/*": ["./shared/*"]
     },
 
     // Some stricter flags (disabled by default)

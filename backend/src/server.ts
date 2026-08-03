@@ -1,10 +1,12 @@
 import fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
+import sensible from "@fastify/sensible";
 import path from "path";
 import router from "./api/router";
 import { getAllowedOrigins } from "./lib/allowed-origins";
-import type { FastifyInstance } from "fastify";
+import { ZodError } from "zod";
+import type { FastifyError, FastifyInstance } from "fastify";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -16,6 +18,8 @@ export async function buildServer(): Promise<FastifyInstance> {
   const server = fastify({
     logger: process.env.NODE_ENV !== "development",
   });
+
+  await server.register(sensible);
 
   // Setup CORS
   const allowedOrigins = new Set(getAllowedOrigins());
@@ -44,15 +48,20 @@ export async function buildServer(): Promise<FastifyInstance> {
     reply.sendFile("index.html");
   });
 
+  server.setErrorHandler<FastifyError>((error, request, reply) => {
+    if (error instanceof ZodError) {
+      return reply.status(400).send({ error: "Validation failed", issues: error.issues });
+    }
+    const statusCode = typeof error.statusCode === "number" ? error.statusCode : 500;
+    if (statusCode < 500) {
+      return reply.status(statusCode).send({ error: error.message });
+    }
+    request.log.error(error);
+    return reply.status(500).send({ error: "Internal server error" });
+  });
+
   // Register API routes
   await server.register(router);
 
   return server;
 }
-
-const server = await buildServer();
-
-await server.listen({
-  port: Number(process.env.PORT) || 3006,
-  host: "0.0.0.0",
-});

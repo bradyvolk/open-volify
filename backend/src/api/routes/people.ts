@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify"
 import { z } from "zod"
+import { httpErrors } from "@fastify/sensible"
 import { authenticate, can } from "../../lib/auth-middleware"
 import {
   listContacts,
@@ -36,7 +37,7 @@ const ContactQuerySchema = z.object({
 export default async function peopleRoutes(fastify: FastifyInstance) {
   fastify.get("/", {
     preHandler: [authenticate, can({ contact: ["read"] })],
-    async handler(request, reply) {
+    async handler(request) {
       const query = ContactQuerySchema.parse(request.query)
       return listContacts(query)
     },
@@ -53,21 +54,21 @@ export default async function peopleRoutes(fastify: FastifyInstance) {
 
   fastify.get("/:id", {
     preHandler: [authenticate, can({ contact: ["read"] })],
-    async handler(request, reply) {
+    async handler(request) {
       const { id } = request.params as { id: string }
       const result = await getContactById(id)
-      if (!result) return reply.status(404).send({ error: "Contact not found" })
+      if (!result) throw httpErrors.notFound("Contact not found")
       return result
     },
   })
 
   fastify.patch("/:id", {
     preHandler: [authenticate, can({ contact: ["update"] })],
-    async handler(request, reply) {
+    async handler(request) {
       const { id } = request.params as { id: string }
       const body = UpdateContactSchema.parse(request.body)
       const result = await updateContact(id, body)
-      if (!result) return reply.status(404).send({ error: "Contact not found" })
+      if (!result) throw httpErrors.notFound("Contact not found")
       return result
     },
   })

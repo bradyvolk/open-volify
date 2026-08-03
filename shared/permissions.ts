@@ -8,6 +8,8 @@ const statement = {
 
 export const ac = createAccessControl(statement)
 
+export type UserRole = "volunteer" | "staff" | "admin"
+
 export const volunteer = ac.newRole({
   contact: ["read"],
 })

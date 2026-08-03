@@ -4,7 +4,7 @@ import { admin as adminPlugin } from "better-auth/plugins"
 import db from "./db/db"
 import { user, account, session, verification } from "./db/schema/auth-schema"
 import { Resend } from "resend"
-import { ac, volunteer, staff, admin } from "./lib/permissions"
+import { ac, volunteer, staff, admin } from "@shared/permissions"
 import { getAllowedOrigins } from "./lib/allowed-origins"
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
