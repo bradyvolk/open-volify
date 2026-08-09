@@ -126,6 +126,142 @@ describe("People routes", () => {
       });
       expect(response.statusCode).toBe(400);
     });
+
+    it("returns 400 for an invalid phone number", async () => {
+      const response = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: { firstName: "A", lastName: "B", role: "volunteer", phone: "123" },
+      });
+      expect(response.statusCode).toBe(400);
+    });
+
+    it("normalizes a formatted phone number to E.164", async () => {
+      const response = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: {
+          firstName: "A",
+          lastName: "B",
+          role: "volunteer",
+          phone: "(555) 123-4567",
+        },
+      });
+      expect(response.statusCode).toBe(201);
+      createdContactIds.push(response.json().id);
+      expect(response.json().phone).toBe("+15551234567");
+    });
+
+    it("returns 400 for an invalid postal code", async () => {
+      const response = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: { firstName: "A", lastName: "B", role: "volunteer", postalCode: "abc" },
+      });
+      expect(response.statusCode).toBe(400);
+    });
+
+    it("returns 400 for an invalid state code", async () => {
+      const response = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: { firstName: "A", lastName: "B", role: "volunteer", state: "ZZ" },
+      });
+      expect(response.statusCode).toBe(400);
+    });
+
+    it("returns 400 for a non-uuid contact id", async () => {
+      const response = await server.inject({
+        method: "GET",
+        url: "/api/people/not-a-uuid",
+        cookies: admin.cookies,
+      });
+      expect(response.statusCode).toBe(400);
+    });
+
+    it("clears an optional field to null when patched with an empty string", async () => {
+      const created = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: {
+          firstName: "A",
+          lastName: "B",
+          role: "volunteer",
+          pronouns: "they/them",
+        },
+      });
+      const contactId = created.json().id;
+      createdContactIds.push(contactId);
+      expect(created.json().pronouns).toBe("they/them");
+
+      const patched = await server.inject({
+        method: "PATCH",
+        url: `/api/people/${contactId}`,
+        cookies: admin.cookies,
+        payload: { pronouns: "" },
+      });
+      expect(patched.statusCode).toBe(200);
+      expect(patched.json().pronouns).toBeNull();
+    });
+
+    it("leaves omitted fields unchanged on patch", async () => {
+      const created = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: {
+          firstName: "A",
+          lastName: "B",
+          role: "volunteer",
+          pronouns: "she/her",
+        },
+      });
+      const contactId = created.json().id;
+      createdContactIds.push(contactId);
+
+      const patched = await server.inject({
+        method: "PATCH",
+        url: `/api/people/${contactId}`,
+        cookies: admin.cookies,
+        payload: { lastName: "Updated" },
+      });
+      expect(patched.statusCode).toBe(200);
+      expect(patched.json().pronouns).toBe("she/her");
+    });
+
+    it("only returns whitelisted fields in the response", async () => {
+      const response = await server.inject({
+        method: "POST",
+        url: "/api/people",
+        cookies: admin.cookies,
+        payload: { firstName: "A", lastName: "B", role: "volunteer" },
+      });
+      createdContactIds.push(response.json().id);
+      expect(Object.keys(response.json()).sort()).toEqual(
+        [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "pronouns",
+          "role",
+          "addressLine1",
+          "addressLine2",
+          "city",
+          "state",
+          "postalCode",
+          "country",
+          "createdAt",
+          "updatedAt",
+        ].sort(),
+      );
+    });
   });
 
   describe("duplicate email", () => {
