@@ -100,7 +100,7 @@ describe("ContactParamsSchema", () => {
 });
 
 describe("ContactResponseSchema", () => {
-  it("serializes a full contact record with ISO date strings", () => {
+  it("parses a full contact record and serializes dates to ISO strings over JSON", () => {
     const now = new Date();
     const record = {
       id: crypto.randomUUID(),
@@ -120,7 +120,9 @@ describe("ContactResponseSchema", () => {
       updatedAt: now,
     };
     const result = ContactResponseSchema.parse(record);
-    expect(result.createdAt).toBe(now.toISOString());
-    expect(result.updatedAt).toBe(now.toISOString());
+    expect(result.createdAt).toEqual(now);
+    expect(result.updatedAt).toEqual(now);
+    expect(JSON.parse(JSON.stringify(result)).createdAt).toBe(now.toISOString());
+    expect(JSON.parse(JSON.stringify(result)).updatedAt).toBe(now.toISOString());
   });
 });

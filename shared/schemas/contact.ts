@@ -51,10 +51,12 @@ export const ContactResponseSchema = z.object({
   state: z.string().nullable(),
   postalCode: z.string().nullable(),
   country: z.string().nullable(),
-  createdAt: z.date().transform((date) => date.toISOString()),
-  updatedAt: z.date().transform((date) => date.toISOString()),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
+export type ContactRole = z.infer<typeof ContactRoleSchema>;
 export type CreateContactInput = z.infer<typeof CreateContactSchema>;
 export type UpdateContactInput = z.infer<typeof UpdateContactSchema>;
 export type ContactQuery = z.infer<typeof ContactQuerySchema>;
+export type ContactResponse = z.infer<typeof ContactResponseSchema>;

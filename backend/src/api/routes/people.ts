@@ -1,7 +1,14 @@
 import type { FastifyInstance } from "fastify";
-import { z } from "zod";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { httpErrors } from "@fastify/sensible";
 import { authenticate, can } from "../../lib/auth-middleware";
+import {
+  CreateContactSchema,
+  UpdateContactSchema,
+  ContactQuerySchema,
+  ContactParamsSchema,
+  ContactResponseSchema,
+} from "@shared/schemas/contact";
 import {
   listContacts,
   createContact,
@@ -9,76 +16,84 @@ import {
   updateContact,
   deleteContact,
 } from "../controllers/peopleController";
-
-const ContactRoleSchema = z.enum(["volunteer", "staff", "admin"]);
-
-const CreateContactSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email().optional(),
-  phone: z.string().optional(),
-  pronouns: z.string().optional(),
-  role: ContactRoleSchema,
-  addressLine1: z.string().optional(),
-  addressLine2: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  postalCode: z.string().optional(),
-  country: z.string().optional(),
-});
-
-const UpdateContactSchema = CreateContactSchema.partial();
-
-const ContactQuerySchema = z.object({
-  search: z.string().optional(),
-  role: ContactRoleSchema.optional(),
-});
+import { z } from "zod";
 
 export default async function peopleRoutes(fastify: FastifyInstance) {
-  fastify.get("/", {
-    preHandler: [authenticate, can({ contact: ["read"] })],
-    async handler(request) {
-      const query = ContactQuerySchema.parse(request.query);
-      return listContacts(query);
-    },
-  });
+  const app = fastify.withTypeProvider<ZodTypeProvider>();
 
-  fastify.post("/", {
-    preHandler: [authenticate, can({ contact: ["create"] })],
-    async handler(request, reply) {
-      const body = CreateContactSchema.parse(request.body);
-      const result = await createContact(body);
+  app.get(
+    "/",
+    {
+      preValidation: [authenticate, can({ contact: ["read"] })],
+      schema: {
+        querystring: ContactQuerySchema,
+        response: { 200: z.array(ContactResponseSchema) },
+      },
+    },
+    async (request) => {
+      return listContacts(request.query);
+    },
+  );
+
+  app.post(
+    "/",
+    {
+      preValidation: [authenticate, can({ contact: ["create"] })],
+      schema: {
+        body: CreateContactSchema,
+        response: { 201: ContactResponseSchema },
+      },
+    },
+    async (request, reply) => {
+      const result = await createContact(request.body);
       return reply.status(201).send(result);
     },
-  });
+  );
 
-  fastify.get("/:id", {
-    preHandler: [authenticate, can({ contact: ["read"] })],
-    async handler(request) {
-      const { id } = request.params as { id: string };
-      const result = await getContactById(id);
+  app.get(
+    "/:id",
+    {
+      preValidation: [authenticate, can({ contact: ["read"] })],
+      schema: {
+        params: ContactParamsSchema,
+        response: { 200: ContactResponseSchema },
+      },
+    },
+    async (request) => {
+      const result = await getContactById(request.params.id);
       if (!result) throw httpErrors.notFound("Contact not found");
       return result;
     },
-  });
+  );
 
-  fastify.patch("/:id", {
-    preHandler: [authenticate, can({ contact: ["update"] })],
-    async handler(request) {
-      const { id } = request.params as { id: string };
-      const body = UpdateContactSchema.parse(request.body);
-      const result = await updateContact(id, body);
+  app.patch(
+    "/:id",
+    {
+      preValidation: [authenticate, can({ contact: ["update"] })],
+      schema: {
+        params: ContactParamsSchema,
+        body: UpdateContactSchema,
+        response: { 200: ContactResponseSchema },
+      },
+    },
+    async (request) => {
+      const result = await updateContact(request.params.id, request.body);
       if (!result) throw httpErrors.notFound("Contact not found");
       return result;
     },
-  });
+  );
 
-  fastify.delete("/:id", {
-    preHandler: [authenticate, can({ contact: ["delete"] })],
-    async handler(request, reply) {
-      const { id } = request.params as { id: string };
-      await deleteContact(id);
+  app.delete(
+    "/:id",
+    {
+      preValidation: [authenticate, can({ contact: ["delete"] })],
+      schema: {
+        params: ContactParamsSchema,
+      },
+    },
+    async (request, reply) => {
+      await deleteContact(request.params.id);
       return reply.status(204).send();
     },
-  });
+  );
 }

@@ -3,21 +3,7 @@ import { httpErrors } from "@fastify/sensible";
 import db from "../../db/db";
 import { contact } from "../../db/schema/contact-schema";
 import type { Contact } from "../../db/schema/contact-schema";
-
-type CreateContactInput = {
-  firstName: string;
-  lastName: string;
-  email?: string | null;
-  phone?: string | null;
-  pronouns?: string | null;
-  role: string;
-  addressLine1?: string | null;
-  addressLine2?: string | null;
-  city?: string | null;
-  state?: string | null;
-  postalCode?: string | null;
-  country?: string | null;
-};
+import type { CreateContactInput, ContactRole } from "@shared/schemas/contact";
 
 function isUniqueConstraintViolation(error: unknown): boolean {
   const cause = (error as { cause?: { code?: unknown } } | null)?.cause;
@@ -26,7 +12,7 @@ function isUniqueConstraintViolation(error: unknown): boolean {
 
 export async function listContacts(filters: {
   search?: string;
-  role?: string;
+  role?: ContactRole;
 }): Promise<Contact[]> {
   const where = and(
     filters.search

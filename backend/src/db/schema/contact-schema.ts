@@ -1,4 +1,5 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import type { ContactRole } from "@shared/schemas/contact";
 
 export const contact = pgTable("contact", {
   id: text("id").primaryKey(),
@@ -7,7 +8,7 @@ export const contact = pgTable("contact", {
   email: text("email").unique(),
   phone: text("phone"),
   pronouns: text("pronouns"),
-  role: text("role").notNull(),
+  role: text("role").notNull().$type<ContactRole>(),
   addressLine1: text("address_line1"),
   addressLine2: text("address_line2"),
   city: text("city"),
