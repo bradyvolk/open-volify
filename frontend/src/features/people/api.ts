@@ -1,3 +1,6 @@
+import { CreateContactSchema } from "@shared/schemas/contact";
+import type { z } from "zod";
+
 const API_BASE = process.env.NODE_ENV === "production" ? "" : "http://localhost:3006";
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
@@ -34,20 +37,7 @@ export type Contact = {
   updatedAt: string;
 };
 
-export type CreateContactInput = {
-  firstName: string;
-  lastName: string;
-  email?: string;
-  phone?: string;
-  pronouns?: string;
-  role: ContactRole;
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
-};
+export type CreateContactInput = z.output<typeof CreateContactSchema>;
 
 export type UpdateContactInput = Partial<CreateContactInput>;
 
