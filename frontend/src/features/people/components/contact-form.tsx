@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,24 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CreateContactSchema } from "@shared/schemas/contact";
+import type { z } from "zod";
 import type { Contact, CreateContactInput } from "../api";
 
-const ContactFormSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address").or(z.literal("")).optional(),
-  phone: z.string().optional(),
-  pronouns: z.string().optional(),
-  role: z.enum(["volunteer", "staff", "admin"]),
-  addressLine1: z.string().optional(),
-  addressLine2: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  postalCode: z.string().optional(),
-  country: z.string().optional(),
-});
-
-type ContactFormValues = z.infer<typeof ContactFormSchema>;
+type ContactFormValues = z.input<typeof CreateContactSchema>;
 
 interface ContactFormProps {
   defaultValues?: Partial<Contact>;
@@ -39,7 +25,7 @@ interface ContactFormProps {
 
 export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }: ContactFormProps) {
   const form = useForm<ContactFormValues>({
-    resolver: zodResolver(ContactFormSchema),
+    resolver: zodResolver(CreateContactSchema),
     defaultValues: {
       firstName: defaultValues?.firstName ?? "",
       lastName: defaultValues?.lastName ?? "",
@@ -57,21 +43,7 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
   });
 
   function handleSubmit(values: ContactFormValues) {
-    const input: CreateContactInput = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      role: values.role,
-      ...(values.email ? { email: values.email } : {}),
-      ...(values.phone ? { phone: values.phone } : {}),
-      ...(values.pronouns ? { pronouns: values.pronouns } : {}),
-      ...(values.addressLine1 ? { addressLine1: values.addressLine1 } : {}),
-      ...(values.addressLine2 ? { addressLine2: values.addressLine2 } : {}),
-      ...(values.city ? { city: values.city } : {}),
-      ...(values.state ? { state: values.state } : {}),
-      ...(values.postalCode ? { postalCode: values.postalCode } : {}),
-      ...(values.country ? { country: values.country } : {}),
-    };
-    onSubmit(input);
+    onSubmit(values as CreateContactInput);
   }
 
   return (
