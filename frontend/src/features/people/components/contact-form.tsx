@@ -76,6 +76,9 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <Input id="phone" type="tel" {...form.register("phone")} />
+          {form.formState.errors.phone && (
+            <p className="text-sm text-destructive">{form.formState.errors.phone.message}</p>
+          )}
         </div>
       </div>
 
@@ -103,6 +106,9 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="pronouns">Pronouns</Label>
           <Input id="pronouns" {...form.register("pronouns")} />
+          {form.formState.errors.pronouns && (
+            <p className="text-sm text-destructive">{form.formState.errors.pronouns.message}</p>
+          )}
         </div>
       </div>
 
@@ -111,28 +117,46 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="addressLine1">Street address</Label>
           <Input id="addressLine1" {...form.register("addressLine1")} />
+          {form.formState.errors.addressLine1 && (
+            <p className="text-sm text-destructive">{form.formState.errors.addressLine1.message}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="addressLine2">Apt, suite, etc.</Label>
           <Input id="addressLine2" {...form.register("addressLine2")} />
+          {form.formState.errors.addressLine2 && (
+            <p className="text-sm text-destructive">{form.formState.errors.addressLine2.message}</p>
+          )}
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
             <Input id="city" {...form.register("city")} />
+            {form.formState.errors.city && (
+              <p className="text-sm text-destructive">{form.formState.errors.city.message}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
             <Input id="state" {...form.register("state")} />
+            {form.formState.errors.state && (
+              <p className="text-sm text-destructive">{form.formState.errors.state.message}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="postalCode">Postal code</Label>
             <Input id="postalCode" {...form.register("postalCode")} />
+            {form.formState.errors.postalCode && (
+              <p className="text-sm text-destructive">{form.formState.errors.postalCode.message}</p>
+            )}
           </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="country">Country</Label>
           <Input id="country" {...form.register("country")} />
+          {form.formState.errors.country && (
+            <p className="text-sm text-destructive">{form.formState.errors.country.message}</p>
+          )}
         </div>
       </div>
 
