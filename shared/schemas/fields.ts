@@ -26,7 +26,7 @@ export const stateField = z
     message: "Must be a valid US state or territory code",
   });
 
-export const nameField = z.string().trim().min(1).max(100);
+export const nameField = z.string().trim().min(1, "Name is required").max(100);
 
 export function shortTextField(maxLength: number) {
   return z.string().trim().min(1).max(maxLength);
