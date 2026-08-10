@@ -44,7 +44,7 @@ export const ContactResponseSchema = z.object({
   email: z.string().nullable(),
   phone: z.string().nullable(),
   pronouns: z.string().nullable(),
-  role: ContactRoleSchema,
+  role: z.string(),
   addressLine1: z.string().nullable(),
   addressLine2: z.string().nullable(),
   city: z.string().nullable(),

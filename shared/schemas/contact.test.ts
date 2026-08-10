@@ -125,4 +125,26 @@ describe("ContactResponseSchema", () => {
     expect(JSON.parse(JSON.stringify(result)).createdAt).toBe(now.toISOString());
     expect(JSON.parse(JSON.stringify(result)).updatedAt).toBe(now.toISOString());
   });
+
+  it("accepts a role outside the enum for legacy or un-normalized rows", () => {
+    const now = new Date();
+    const record = {
+      id: crypto.randomUUID(),
+      firstName: "Pat",
+      lastName: "Lee",
+      email: null,
+      phone: null,
+      pronouns: null,
+      role: "legacy-role",
+      addressLine1: null,
+      addressLine2: null,
+      city: null,
+      state: null,
+      postalCode: null,
+      country: null,
+      createdAt: now,
+      updatedAt: now,
+    };
+    expect(ContactResponseSchema.parse(record).role).toBe("legacy-role");
+  });
 });
