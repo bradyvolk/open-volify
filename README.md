@@ -16,7 +16,7 @@
 ---
 
 > [!WARNING]
-> Open Volify is pre-1.0 and under active construction. APIs, schema, and features will change. It is not recommended for production use. Contributions, issues, and feedback are very welcome! This project is in its very early stages. There are known issues, and there's a need to develop strong patterns for developers to reuse.
+> Open Volify is not yet released and under very active construction. APIs, schema, and features will change. It is not recommended for production use (of course). That said, contributions, issues, and feedback are very welcome! This project is in its very early stages. There are known issues, and there's a need to develop strong patterns for developers to reuse.
 >
 > The public-facing marketing/product/community pages for [open-volify.org](https://open-volify.org/) live in a separate repo, [open-volify-site](https://github.com/bradyvolk/open-volify-site). This repo is the self-hostable platform only.
 
@@ -26,7 +26,7 @@ Open Volify gives nonprofits a complete back-office system for running volunteer
 
 Nonprofits can self-host their own instance. Many orgs run their volunteer programs out of spreadsheets and email today; Open Volify aims to be the approachable, open alternative.
 
-### Modules (MVP)
+### Planned Modules
 
 | Module            | Description                                                                                                                                                              |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -39,7 +39,7 @@ Nonprofits can self-host their own instance. Many orgs run their volunteer progr
 
 - **Frontend:** React 19, React Router v7, TanStack Query, Tailwind CSS v4, Shadcn UI
 - **Backend:** Fastify v5, Drizzle ORM, PostgreSQL, Better Auth, Resend
-- **Runtime:** [Bun](https://bun.com) throughout (no Node/npm/vite)
+- **Runtime:** [Bun](https://bun.com) throughout
 
 ## Getting Started
 
