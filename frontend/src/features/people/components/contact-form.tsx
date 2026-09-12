@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FieldError } from "@/components/ui/field-error";
+import { FieldError } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -54,12 +54,16 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="firstName">First name *</Label>
           <Input id="firstName" {...form.register("firstName")} />
-          <FieldError message={form.formState.errors.firstName?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.firstName]} />
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="lastName">Last name *</Label>
           <Input id="lastName" {...form.register("lastName")} />
-          <FieldError message={form.formState.errors.lastName?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.lastName]} />
+          </div>
         </div>
       </div>
 
@@ -67,12 +71,16 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" {...form.register("email")} />
-          <FieldError message={form.formState.errors.email?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.email]} />
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <Input id="phone" type="tel" {...form.register("phone")} />
-          <FieldError message={form.formState.errors.phone?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.phone]} />
+          </div>
         </div>
       </div>
 
@@ -100,7 +108,9 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="pronouns">Pronouns</Label>
           <Input id="pronouns" {...form.register("pronouns")} />
-          <FieldError message={form.formState.errors.pronouns?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.pronouns]} />
+          </div>
         </div>
       </div>
 
@@ -109,18 +119,24 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="addressLine1">Street address</Label>
           <Input id="addressLine1" {...form.register("addressLine1")} />
-          <FieldError message={form.formState.errors.addressLine1?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.addressLine1]} />
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="addressLine2">Apt, suite, etc.</Label>
           <Input id="addressLine2" {...form.register("addressLine2")} />
-          <FieldError message={form.formState.errors.addressLine2?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.addressLine2]} />
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
             <Input id="city" {...form.register("city")} />
-            <FieldError message={form.formState.errors.city?.message} />
+            <div className="min-h-5">
+              <FieldError errors={[form.formState.errors.city]} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
@@ -129,18 +145,24 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
               value={form.watch("state") ?? ""}
               onValueChange={(value) => form.setValue("state", value, { shouldValidate: true })}
             />
-            <FieldError message={form.formState.errors.state?.message} />
+            <div className="min-h-5">
+              <FieldError errors={[form.formState.errors.state]} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="postalCode">Postal code</Label>
             <Input id="postalCode" {...form.register("postalCode")} />
-            <FieldError message={form.formState.errors.postalCode?.message} />
+            <div className="min-h-5">
+              <FieldError errors={[form.formState.errors.postalCode]} />
+            </div>
           </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="country">Country</Label>
           <Input id="country" {...form.register("country")} />
-          <FieldError message={form.formState.errors.country?.message} />
+          <div className="min-h-5">
+            <FieldError errors={[form.formState.errors.country]} />
+          </div>
         </div>
       </div>
 
