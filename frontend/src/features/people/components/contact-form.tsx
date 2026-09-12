@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FieldError } from "@/components/ui/field-error";
 import {
   Select,
   SelectContent,
@@ -47,21 +48,17 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
   }
 
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+    <form onSubmit={form.handleSubmit(handleSubmit)} noValidate className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="firstName">First name *</Label>
           <Input id="firstName" {...form.register("firstName")} />
-          {form.formState.errors.firstName && (
-            <p className="text-sm text-destructive">{form.formState.errors.firstName.message}</p>
-          )}
+          <FieldError message={form.formState.errors.firstName?.message} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="lastName">Last name *</Label>
           <Input id="lastName" {...form.register("lastName")} />
-          {form.formState.errors.lastName && (
-            <p className="text-sm text-destructive">{form.formState.errors.lastName.message}</p>
-          )}
+          <FieldError message={form.formState.errors.lastName?.message} />
         </div>
       </div>
 
@@ -69,16 +66,12 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" {...form.register("email")} />
-          {form.formState.errors.email && (
-            <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
-          )}
+          <FieldError message={form.formState.errors.email?.message} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <Input id="phone" type="tel" {...form.register("phone")} />
-          {form.formState.errors.phone && (
-            <p className="text-sm text-destructive">{form.formState.errors.phone.message}</p>
-          )}
+          <FieldError message={form.formState.errors.phone?.message} />
         </div>
       </div>
 
@@ -106,9 +99,7 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="pronouns">Pronouns</Label>
           <Input id="pronouns" {...form.register("pronouns")} />
-          {form.formState.errors.pronouns && (
-            <p className="text-sm text-destructive">{form.formState.errors.pronouns.message}</p>
-          )}
+          <FieldError message={form.formState.errors.pronouns?.message} />
         </div>
       </div>
 
@@ -117,46 +108,34 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
         <div className="space-y-2">
           <Label htmlFor="addressLine1">Street address</Label>
           <Input id="addressLine1" {...form.register("addressLine1")} />
-          {form.formState.errors.addressLine1 && (
-            <p className="text-sm text-destructive">{form.formState.errors.addressLine1.message}</p>
-          )}
+          <FieldError message={form.formState.errors.addressLine1?.message} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="addressLine2">Apt, suite, etc.</Label>
           <Input id="addressLine2" {...form.register("addressLine2")} />
-          {form.formState.errors.addressLine2 && (
-            <p className="text-sm text-destructive">{form.formState.errors.addressLine2.message}</p>
-          )}
+          <FieldError message={form.formState.errors.addressLine2?.message} />
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
             <Input id="city" {...form.register("city")} />
-            {form.formState.errors.city && (
-              <p className="text-sm text-destructive">{form.formState.errors.city.message}</p>
-            )}
+            <FieldError message={form.formState.errors.city?.message} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
             <Input id="state" {...form.register("state")} />
-            {form.formState.errors.state && (
-              <p className="text-sm text-destructive">{form.formState.errors.state.message}</p>
-            )}
+            <FieldError message={form.formState.errors.state?.message} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="postalCode">Postal code</Label>
             <Input id="postalCode" {...form.register("postalCode")} />
-            {form.formState.errors.postalCode && (
-              <p className="text-sm text-destructive">{form.formState.errors.postalCode.message}</p>
-            )}
+            <FieldError message={form.formState.errors.postalCode?.message} />
           </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="country">Country</Label>
           <Input id="country" {...form.register("country")} />
-          {form.formState.errors.country && (
-            <p className="text-sm text-destructive">{form.formState.errors.country.message}</p>
-          )}
+          <FieldError message={form.formState.errors.country?.message} />
         </div>
       </div>
 
