@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StateSelect } from "@/components/ui/state-select";
 import { CreateContactSchema } from "@shared/schemas/contact";
 import type { z } from "zod";
 import type { Contact, CreateContactInput } from "../api";
@@ -123,7 +124,11 @@ export function ContactForm({ defaultValues, onSubmit, onCancel, isSubmitting }:
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
-            <Input id="state" {...form.register("state")} />
+            <StateSelect
+              id="state"
+              value={form.watch("state") ?? ""}
+              onValueChange={(value) => form.setValue("state", value, { shouldValidate: true })}
+            />
             <FieldError message={form.formState.errors.state?.message} />
           </div>
           <div className="space-y-2">
