@@ -24,7 +24,7 @@ export function getAdditionalAllowedOrigins(): string[] {
  */
 export function getAllowedOrigins(): string[] {
   const origins: string[] = [];
-  if (!isProduction) origins.push("http://localhost:3001");
+  if (!isProduction) origins.push(`http://localhost:${process.env.FRONTEND_PORT || 3001}`);
   if (process.env.APP_URL) origins.push(process.env.APP_URL);
   origins.push(...getAdditionalAllowedOrigins());
   return origins;

@@ -5,9 +5,10 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -n frontend,server -c cyan,magenta \"bun dev:frontend\" \"bun dev:server\"",
+    "dev": "bun run check:ports && concurrently -n frontend,server -c cyan,magenta \"bun dev:frontend\" \"bun dev:server\"",
     "dev:frontend": "bun --hot frontend/src/index.ts",
     "dev:server": "bun --hot backend/src/bootstrap.ts",
+    "check:ports": "bun scripts/check-ports.ts",
     "migrate": "bun run backend/src/migrate.ts",
     "db:migrate": "bun run backend/src/migrate.ts",
     "start": "NODE_ENV=production bun frontend/src/index.ts",

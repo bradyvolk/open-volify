@@ -103,6 +103,41 @@ bun test
 
 Currently, tests run against a real local Postgres (no DB mocking), so make sure your database is running first.
 
+### Running Multiple Instances
+
+Sometimes you'll want two working copies running at once — most commonly a [git worktree](https://git-scm.com/docs/git-worktree) checked out alongside your main one, so an agent or a second task can run without touching your current branch. Each instance needs its own ports and its own database.
+
+1. **Set up the worktree**
+
+   ```bash
+   git worktree add ../open-volify-groups -b groups-feature
+   cd ../open-volify-groups
+   bun install
+   cp backend/.env.example backend/.env
+   ```
+
+2. **Give it its own ports.** In the new checkout's `backend/.env`, change `PORT`, `FRONTEND_PORT`, and `BETTER_AUTH_URL` together, e.g.:
+
+   ```
+   PORT=3206
+   FRONTEND_PORT=3201
+   BETTER_AUTH_URL=http://localhost:3206
+   ```
+
+   `bun run dev` checks both ports before starting and fails fast with a clear message if either is already taken by another running instance.
+
+3. **Give it its own Postgres**, on a different host port so it doesn't share data (or migrations) with your other checkout:
+
+   ```bash
+   docker run --name open-volify-postgres-groups -e POSTGRES_PASSWORD=password -d -p 5433:5432 postgres
+   ```
+
+   Point `DATABASE_URL` in that checkout's `backend/.env` at the new port: `postgres://postgres:password@localhost:5433/postgres`.
+
+4. **Migrate and run** as usual (`cd backend && bun drizzle-kit migrate && cd .. && bun run dev`).
+
+You don't need to touch CORS or the frontend's API URL — the frontend dev server proxies `/api/*` to its own backend, so each instance is entirely self-contained regardless of which ports you pick.
+
 ## Self-Hosting with Docker Compose
 
 Run the whole stack (app + Postgres) with one command. You only need [Docker](https://docs.docker.com/engine/install/).

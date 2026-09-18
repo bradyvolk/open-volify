@@ -22,10 +22,7 @@ export function SignInForm() {
       const { data, error: signInError } = await authClient.signIn.email({
         email,
         password,
-        callbackURL:
-          process.env.NODE_ENV === "production"
-            ? window.location.origin + "/platform/projects"
-            : "http://localhost:3001/platform/projects",
+        callbackURL: window.location.origin + "/platform/projects",
       });
 
       if (signInError) {
