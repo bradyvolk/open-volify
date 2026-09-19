@@ -1,14 +1,14 @@
 import { Outlet } from "react-router";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset } from "@/components/ui/sidebar";
 import { LeftNav } from "./left-nav/left-nav";
 
 export function PlatformLayout() {
   return (
-    <SidebarProvider>
+    <div className="flex w-full">
       <LeftNav />
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <Outlet />
       </SidebarInset>
-    </SidebarProvider>
+    </div>
   );
 }

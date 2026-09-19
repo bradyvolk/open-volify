@@ -37,7 +37,7 @@ export function LeftNav() {
   const location = useLocation();
 
   return (
-    <Sidebar>
+    <Sidebar className="top-[65px] h-[calc(100svh-65px)]">
       <SidebarContent>
         <SidebarMenu>
           {navItems.map((item) => {
