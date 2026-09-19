@@ -40,8 +40,7 @@ export function SignUpForm() {
         name: `${firstName} ${lastName}`.trim(),
         email,
         password,
-        callbackURL:
-          process.env.NODE_ENV === "production" ? window.location.origin : "http://localhost:3001",
+        callbackURL: window.location.origin,
       });
 
       if (signUpError) {

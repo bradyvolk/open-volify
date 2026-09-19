@@ -1,10 +1,8 @@
 import { CreateContactSchema } from "@shared/schemas/contact";
 import type { z } from "zod";
 
-const API_BASE = process.env.NODE_ENV === "production" ? "" : "http://localhost:3006";
-
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(path, {
     ...options,
     credentials: "include",
     headers: {

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently -n frontend,server -c cyan,magenta \"bun dev:frontend\" \"bun dev:server\"",
-    "dev:frontend": "bun --hot frontend/src/index.ts",
+    "dev:frontend": "bun --env-file=backend/.env --hot frontend/src/index.ts",
     "dev:server": "bun --hot backend/src/bootstrap.ts",
     "migrate": "bun run backend/src/migrate.ts",
     "db:migrate": "bun run backend/src/migrate.ts",

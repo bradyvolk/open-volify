@@ -103,6 +103,10 @@ bun test
 
 Currently, tests run against a real local Postgres (no DB mocking), so make sure your database is running first.
 
+### Running Multiple Instances
+
+To run a second checkout (e.g. a git worktree) alongside your main one, see the [`using-worktrees` skill](.claude/skills/using-worktrees/SKILL.md).
+
 ## Self-Hosting with Docker Compose
 
 Run the whole stack (app + Postgres) with one command. You only need [Docker](https://docs.docker.com/engine/install/).
