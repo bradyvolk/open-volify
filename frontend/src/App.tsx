@@ -20,9 +20,9 @@ export function App() {
   return (
     <BrowserRouter>
       <SidebarProvider className="block">
-        <div className="min-h-screen flex flex-col">
+        <div className="flex h-svh flex-col overflow-hidden">
           <TopNav />
-          <main className="flex-1 bg-gradient-to-tr from-primary/10 to-background min-h-screen">
+          <main className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-gradient-to-tr from-primary/10 to-background">
             <Routes>
               <Route path="/" element={<Navigate to="/sign-in" replace />} />
               <Route path="/sign-in" element={<SignIn />} />

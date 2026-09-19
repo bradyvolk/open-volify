@@ -5,7 +5,7 @@ export function GroupsPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-muted/10">
+    <div className="flex-1 bg-muted/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>

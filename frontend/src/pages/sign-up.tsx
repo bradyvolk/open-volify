@@ -3,7 +3,7 @@ import { SignUpForm } from "@/components/auth/sign-up-form";
 
 export function SignUp() {
   return (
-    <div className="min-h-screen">
+    <div className="flex-1">
       {/* Hero Section */}
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

@@ -38,7 +38,7 @@ export function PeopleDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-muted/10 flex items-center justify-center">
+      <div className="flex-1 bg-muted/10 flex items-center justify-center">
         <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     );
@@ -46,14 +46,14 @@ export function PeopleDetailPage() {
 
   if (!contact) {
     return (
-      <div className="min-h-screen bg-muted/10 flex items-center justify-center">
+      <div className="flex-1 bg-muted/10 flex items-center justify-center">
         <p className="text-sm text-muted-foreground">Contact not found.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted/10">
+    <div className="flex-1 bg-muted/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-2xl">
         <div className="flex justify-between items-start mb-8">
           <div>
