@@ -9,6 +9,9 @@ import { Organizations } from "@/pages/organizations";
 import { PeoplePage } from "@/features/people/pages/people-page";
 import { PeopleNewPage } from "@/features/people/pages/people-new-page";
 import { PeopleDetailPage } from "@/features/people/pages/people-detail-page";
+import { GroupsPage } from "@/features/groups/pages/groups-page";
+import { GroupsNewPage } from "@/features/groups/pages/groups-new-page";
+import { GroupsDetailPage } from "@/features/groups/pages/groups-detail-page";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import "./index.css";
@@ -30,6 +33,9 @@ export function App() {
                   <Route path="people" element={<PeoplePage />} />
                   <Route path="people/new" element={<PeopleNewPage />} />
                   <Route path="people/:id" element={<PeopleDetailPage />} />
+                  <Route path="groups" element={<GroupsPage />} />
+                  <Route path="groups/new" element={<GroupsNewPage />} />
+                  <Route path="groups/:id" element={<GroupsDetailPage />} />
                   <Route path="projects" element={<Projects />} />
                   <Route path="organizations" element={<Organizations />} />
                 </Route>
