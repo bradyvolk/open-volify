@@ -1,10 +1,8 @@
 import { CreateContactSchema } from "@shared/schemas/contact";
 import type { z } from "zod";
 
-const API_BASE = "";
-
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(path, {
     ...options,
     credentials: "include",
     headers: {

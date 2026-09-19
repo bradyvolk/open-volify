@@ -19,8 +19,8 @@ export function getAdditionalAllowedOrigins(): string[] {
  *
  * Production is same-origin (frontend and API are served under one origin via
  * CloudFront), so this allowlist mainly exists to *deny* other origins. The
- * canonical public origin comes from APP_URL; localhost is only allowed in
- * development, where the frontend (:3001) calls the API (:3006) cross-origin.
+ * canonical public origin comes from APP_URL; the local frontend origin is only
+ * allowed in development.
  */
 export function getAllowedOrigins(): string[] {
   const origins: string[] = [];

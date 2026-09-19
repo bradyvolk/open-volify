@@ -45,7 +45,7 @@ Single `package.json` at root covers both `frontend/` and `backend/`. The `@/*` 
 
 ### Auth
 
-Better Auth handles authentication at `/api/auth/*`. The backend `auth.ts` uses the Drizzle adapter and the `organization` plugin. Email verification is sent via Resend. The frontend consumes auth via `authClient` from `frontend/src/lib/auth-client.ts`, which points to `http://localhost:3006` in development and `window.location.origin` in production.
+Better Auth handles authentication at `/api/auth/*`. The backend `auth.ts` uses the Drizzle adapter and the `organization` plugin. Email verification is sent via Resend. The frontend consumes auth via `authClient` from `frontend/src/lib/auth-client.ts`, which uses `window.location.origin`. In development the frontend server proxies `/api/*` to the backend.
 
 ### Database Schema
 
