@@ -5,6 +5,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import {
   Sidebar,
   SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -66,7 +68,7 @@ function NavGroupItem({ label, icon: Icon, subItems, pathname }: NavGroupItemPro
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <SidebarMenuSub>
+          <SidebarMenuSub className="gap-1 py-1">
             {subItems.map((subItem) => (
               <SidebarMenuSubItem key={subItem.path}>
                 <SidebarMenuSubButton asChild isActive={isPathActive(pathname, subItem.path)}>
@@ -87,34 +89,41 @@ export function LeftNav() {
   return (
     <Sidebar className="top-[65px] h-[calc(100svh-65px)]">
       <SidebarContent>
-        <SidebarMenu>
-          {navItems.map((item) => {
-            const Icon = item.icon;
+        <SidebarGroup className="px-3 py-4">
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1.5">
+              {navItems.map((item) => {
+                const Icon = item.icon;
 
-            if (item.subItems) {
-              return (
-                <NavGroupItem
-                  key={item.label}
-                  label={item.label}
-                  icon={Icon}
-                  subItems={item.subItems}
-                  pathname={location.pathname}
-                />
-              );
-            }
+                if (item.subItems) {
+                  return (
+                    <NavGroupItem
+                      key={item.label}
+                      label={item.label}
+                      icon={Icon}
+                      subItems={item.subItems}
+                      pathname={location.pathname}
+                    />
+                  );
+                }
 
-            return (
-              <SidebarMenuItem key={item.path}>
-                <SidebarMenuButton asChild isActive={isPathActive(location.pathname, item.path)}>
-                  <Link to={item.path}>
-                    <Icon />
-                    <span>{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
-        </SidebarMenu>
+                return (
+                  <SidebarMenuItem key={item.path}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isPathActive(location.pathname, item.path)}
+                    >
+                      <Link to={item.path}>
+                        <Icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );
