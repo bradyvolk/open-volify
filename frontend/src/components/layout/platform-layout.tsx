@@ -1,13 +1,14 @@
 import { Outlet } from "react-router";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { LeftNav } from "./left-nav/left-nav";
 
 export function PlatformLayout() {
   return (
-    <div className="flex min-h-screen">
+    <SidebarProvider>
       <LeftNav />
-      <div className="flex-1">
+      <SidebarInset>
         <Outlet />
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
