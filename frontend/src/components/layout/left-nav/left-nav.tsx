@@ -1,4 +1,5 @@
-import { ChevronRight, FolderKanban, Building2, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronRight, FolderKanban, Building2, Users, type LucideIcon } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -33,6 +34,53 @@ const navItems = [
   },
 ];
 
+function isPathActive(pathname: string, path: string) {
+  return pathname === path || pathname.startsWith(path + "/");
+}
+
+interface NavGroupItemProps {
+  label: string;
+  icon: LucideIcon;
+  subItems: { label: string; path: string }[];
+  pathname: string;
+}
+
+function NavGroupItem({ label, icon: Icon, subItems, pathname }: NavGroupItemProps) {
+  const isGroupActive = subItems.some((subItem) => isPathActive(pathname, subItem.path));
+  const [open, setOpen] = useState(isGroupActive);
+
+  useEffect(() => {
+    if (isGroupActive) {
+      setOpen(true);
+    }
+  }, [isGroupActive]);
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="group/collapsible">
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton isActive={isGroupActive && !open}>
+            <Icon />
+            <span>{label}</span>
+            <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {subItems.map((subItem) => (
+              <SidebarMenuSubItem key={subItem.path}>
+                <SidebarMenuSubButton asChild isActive={isPathActive(pathname, subItem.path)}>
+                  <Link to={subItem.path}>{subItem.label}</Link>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  );
+}
+
 export function LeftNav() {
   const location = useLocation();
 
@@ -44,46 +92,20 @@ export function LeftNav() {
             const Icon = item.icon;
 
             if (item.subItems) {
-              const isGroupActive = item.subItems.some(
-                (subItem) => location.pathname === subItem.path,
-              );
-
               return (
-                <Collapsible
+                <NavGroupItem
                   key={item.label}
-                  defaultOpen={isGroupActive}
-                  className="group/collapsible"
-                >
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton>
-                        <Icon />
-                        <span>{item.label}</span>
-                        <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.subItems.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.path}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={location.pathname === subItem.path}
-                            >
-                              <Link to={subItem.path}>{subItem.label}</Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
+                  label={item.label}
+                  icon={Icon}
+                  subItems={item.subItems}
+                  pathname={location.pathname}
+                />
               );
             }
 
             return (
               <SidebarMenuItem key={item.path}>
-                <SidebarMenuButton asChild isActive={location.pathname === item.path}>
+                <SidebarMenuButton asChild isActive={isPathActive(location.pathname, item.path)}>
                   <Link to={item.path}>
                     <Icon />
                     <span>{item.label}</span>
