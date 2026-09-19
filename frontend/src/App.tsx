@@ -9,32 +9,41 @@ import { Organizations } from "@/pages/organizations";
 import { PeoplePage } from "@/features/people/pages/people-page";
 import { PeopleNewPage } from "@/features/people/pages/people-new-page";
 import { PeopleDetailPage } from "@/features/people/pages/people-detail-page";
+import { GroupsPage } from "@/features/groups/pages/groups-page";
+import { GroupsNewPage } from "@/features/groups/pages/groups-new-page";
+import { GroupsDetailPage } from "@/features/groups/pages/groups-detail-page";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import "./index.css";
 
 export function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
-        <TopNav />
-        <main className="flex-1 bg-gradient-to-tr from-primary/10 to-background min-h-screen">
-          <Routes>
-            <Route path="/" element={<Navigate to="/sign-in" replace />} />
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp />} />
+      <SidebarProvider className="block">
+        <div className="flex h-svh flex-col overflow-hidden">
+          <TopNav />
+          <main className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-gradient-to-tr from-primary/10 to-background">
+            <Routes>
+              <Route path="/" element={<Navigate to="/sign-in" replace />} />
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/sign-up" element={<SignUp />} />
 
-            <Route element={<ProtectedRoute />}>
-              <Route path="/platform" element={<PlatformLayout />}>
-                <Route path="people" element={<PeoplePage />} />
-                <Route path="people/new" element={<PeopleNewPage />} />
-                <Route path="people/:id" element={<PeopleDetailPage />} />
-                <Route path="projects" element={<Projects />} />
-                <Route path="organizations" element={<Organizations />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/platform" element={<PlatformLayout />}>
+                  <Route path="people" element={<PeoplePage />} />
+                  <Route path="people/new" element={<PeopleNewPage />} />
+                  <Route path="people/:id" element={<PeopleDetailPage />} />
+                  <Route path="groups" element={<GroupsPage />} />
+                  <Route path="groups/new" element={<GroupsNewPage />} />
+                  <Route path="groups/:id" element={<GroupsDetailPage />} />
+                  <Route path="projects" element={<Projects />} />
+                  <Route path="organizations" element={<Organizations />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </main>
-      </div>
+            </Routes>
+          </main>
+        </div>
+      </SidebarProvider>
     </BrowserRouter>
   );
 }

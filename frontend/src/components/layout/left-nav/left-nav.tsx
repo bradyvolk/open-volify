@@ -1,50 +1,130 @@
+import { useEffect, useState } from "react";
+import { ChevronRight, FolderKanban, Building2, Users, type LucideIcon } from "lucide-react";
 import { Link, useLocation } from "react-router";
-import { cn } from "@/lib/utils";
-import { FolderKanban, Building2, Users } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
+
+const navItems = [
+  {
+    label: "Team",
+    icon: Users,
+    subItems: [
+      { label: "People", path: "/platform/people" },
+      { label: "Groups", path: "/platform/groups" },
+    ],
+  },
+  {
+    label: "Projects",
+    path: "/platform/projects",
+    icon: FolderKanban,
+  },
+  {
+    label: "Organizations",
+    path: "/platform/organizations",
+    icon: Building2,
+  },
+];
+
+function isPathActive(pathname: string, path: string) {
+  return pathname === path || pathname.startsWith(path + "/");
+}
+
+interface NavGroupItemProps {
+  label: string;
+  icon: LucideIcon;
+  subItems: { label: string; path: string }[];
+  pathname: string;
+}
+
+function NavGroupItem({ label, icon: Icon, subItems, pathname }: NavGroupItemProps) {
+  const isGroupActive = subItems.some((subItem) => isPathActive(pathname, subItem.path));
+  const [open, setOpen] = useState(isGroupActive);
+
+  useEffect(() => {
+    if (isGroupActive) {
+      setOpen(true);
+    }
+  }, [isGroupActive]);
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="group/collapsible">
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton isActive={isGroupActive && !open}>
+            <Icon />
+            <span>{label}</span>
+            <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub className="gap-1 py-1">
+            {subItems.map((subItem) => (
+              <SidebarMenuSubItem key={subItem.path}>
+                <SidebarMenuSubButton asChild isActive={isPathActive(pathname, subItem.path)}>
+                  <Link to={subItem.path}>{subItem.label}</Link>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  );
+}
 
 export function LeftNav() {
   const location = useLocation();
 
-  const navItems = [
-    {
-      label: "People",
-      path: "/platform/people",
-      icon: Users,
-    },
-    {
-      label: "Projects",
-      path: "/platform/projects",
-      icon: FolderKanban,
-    },
-    {
-      label: "Organizations",
-      path: "/platform/organizations",
-      icon: Building2,
-    },
-  ];
-
   return (
-    <aside className="w-64 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="flex flex-col gap-1 p-4">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                location.pathname === item.path
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              <Icon className="size-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-    </aside>
+    <Sidebar className="top-[65px] h-[calc(100svh-65px)]">
+      <SidebarContent>
+        <SidebarGroup className="px-3 py-4">
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1.5">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+
+                if (item.subItems) {
+                  return (
+                    <NavGroupItem
+                      key={item.label}
+                      label={item.label}
+                      icon={Icon}
+                      subItems={item.subItems}
+                      pathname={location.pathname}
+                    />
+                  );
+                }
+
+                return (
+                  <SidebarMenuItem key={item.path}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isPathActive(location.pathname, item.path)}
+                    >
+                      <Link to={item.path}>
+                        <Icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
